@@ -1,7 +1,7 @@
 Why?
 ----
 
-Apple doesn't provide an API in iOS for presenting notification banners while the app is running. For many projects the most sensible way to respond to a remote push notification would be to display that notification (in the same style it is presented if your app is not foreground) and allow the user to determine whether the notfication merits a response.
+Apple doesn't provide an API in iOS for presenting notification banners while the app is running. For many projects the most sensible way to respond to a remote push notification would be to display that notification (in the same style it is presented if your app is not foreground) and allow the user to determine whether the notification merits a response.
 
 What?
 -----

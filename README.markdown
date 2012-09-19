@@ -35,7 +35,7 @@ This project includes a `podspec` for usage with [CocoaPods](http://http://cocoa
 
 to your `Podfile` and run `pod install`.
 
-Alternately, you can configure your project to include the `QuartzCore` (`CoreGraphics` already includes `QuartzCore` ) framework and add all of the `.h` and `.m` files in this project. If your project does not use ARC, you will need to enabled ARC on these files.
+Alternately, you can configure your project to include the `QuartzCore` (`CoreGraphics` already includes `QuartzCore` ) framework and add all of the `.h` and `.m` files in this project. If your project does not use ARC, you will need to enable ARC on these files.
 
 Licence
 -------

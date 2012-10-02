@@ -78,6 +78,8 @@ const CGFloat kJCNotificationBannerViewMargin = 5;
   CGContextSetRGBFillColor(context, 0, 0, 0, 1);
   CGContextSetLineWidth(context, lineWidth);
   CGContextDrawPath(context, kCGPathStroke);
+
+  CGPathRelease(outlinePath);
 }
 
 - (void) layoutSubviews {

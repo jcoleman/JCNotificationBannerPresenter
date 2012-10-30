@@ -9,5 +9,5 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.framework    = 'QuartzCore'
   s.source       = { :git => 'https://github.com/jcoleman/JCNotificationBannerPresenter.git', :tag => '0.9.0' }
-  s.source_files = '**/*.{h,m}'
+  s.source_files = 'Library/*.{h,m}'
 end

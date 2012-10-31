@@ -6,7 +6,7 @@ typedef void (^JCNotificationBannerTapHandlingBlock)();
 
 @property (nonatomic) NSString* title;
 @property (nonatomic) NSString* message;
-@property (nonatomic, strong) JCNotificationBannerTapHandlingBlock tapHandler;
+@property (nonatomic, copy) JCNotificationBannerTapHandlingBlock tapHandler;
 
 - (JCNotificationBanner*) initWithTitle:(NSString*)title
                                 message:(NSString*)message

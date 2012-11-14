@@ -9,8 +9,8 @@
 @end
 
 @implementation JCNotificationPresenterDemoViewController
-
 - (IBAction) presentNotificationButtonTapped:(id)sender {
+  [[JCNotificationBannerPresenter sharedPresenter] setDelegate:self];
   [JCNotificationBannerPresenter enqueueNotificationWithTitle:self.titleTextField.text
                                                       message:self.messageTextView.text
                                                    tapHandler:^{
@@ -22,6 +22,17 @@
                                                      [alert show];
                                                    }];
 }
+
+- (JCNotificationBannerView*) makeViewForNotification:(JCNotificationBanner *)banner {
+    JCNotificationBannerView* view = [[JCNotificationBannerView alloc] initWithNotification:banner];
+    view.backgroundColor = [UIColor redColor];
+    return view;
+}
+
+- (BOOL) shouldCoverStatusBar {
+    return NO;
+}
+
 
 - (void)viewDidUnload {
   [self setMessageTextView:nil];

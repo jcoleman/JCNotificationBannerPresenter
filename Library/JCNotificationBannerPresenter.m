@@ -16,6 +16,8 @@
 
 @implementation JCNotificationBannerPresenter
 
+@synthesize delegate;
+    
 + (JCNotificationBannerPresenter*) sharedPresenter {
   static JCNotificationBannerPresenter* sharedPresenter = nil;
   static dispatch_once_t onceToken;
@@ -83,14 +85,28 @@
 }
 
 - (void) presentNotification:(JCNotificationBanner*)notification {
+    
+  BOOL shouldCoverStatusBar = YES;
+  if ([self delegate]) {
+    shouldCoverStatusBar = [[self delegate] shouldCoverStatusBar];
+  }
+
   overlayWindow = [[JCNotificationBannerWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   overlayWindow.userInteractionEnabled = YES;
   overlayWindow.opaque = NO;
   overlayWindow.hidden = NO;
-  overlayWindow.windowLevel = UIWindowLevelStatusBar;
+  if (shouldCoverStatusBar) {
+    overlayWindow.windowLevel = UIWindowLevelStatusBar;
+  }
 
-  JCNotificationBannerView* banner = [[JCNotificationBannerView alloc] initWithNotification:notification];
+  NSLog(@"my protocol is %@", [self delegate]);
+  JCNotificationBannerView* banner;
+  if ([self delegate]) {
+    banner = [[self delegate] makeViewForNotification:notification];
+  } else {
+    banner = [[JCNotificationBannerView alloc] initWithNotification: notification];
+  }
   banner.userInteractionEnabled = YES;
 
   bannerViewController = [JCNotificationBannerViewController new];
@@ -117,6 +133,10 @@
   [banner getCurrentPresentingStateAndAtomicallySetPresentingState:YES];
 
   CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
+  if (!shouldCoverStatusBar) {
+    statusBarSize.height = 0;
+  }
+
   CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) / 2) - (350 / 2);
   CGFloat y = -60 - (MIN(statusBarSize.width, statusBarSize.height));
   banner.frame = CGRectMake(x, y, 350, 60);

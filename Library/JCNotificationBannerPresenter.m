@@ -97,6 +97,7 @@
   overlayWindow = [[JCNotificationBannerWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   overlayWindow.userInteractionEnabled = YES;
+  overlayWindow.autoresizesSubviews = YES;
   overlayWindow.opaque = NO;
   overlayWindow.hidden = NO;
   if (shouldCoverStatusBar) {
@@ -113,6 +114,7 @@
     banner = [[JCNotificationBannerView alloc] initWithNotification: notification];
   }
   banner.userInteractionEnabled = YES;
+//banner.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 
   bannerViewController = [JCNotificationBannerViewController new];
   overlayWindow.rootViewController = bannerViewController;
@@ -120,6 +122,7 @@
   UIView* containerView = [UIView new];
   containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   containerView.userInteractionEnabled = YES;
+  containerView.autoresizesSubviews = YES;
   containerView.opaque = NO;
 
   overlayWindow.bannerView = banner;
@@ -127,8 +130,7 @@
   [containerView addSubview:banner];
   bannerViewController.view = containerView;
 
-  
-  banner.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin
+ banner.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin
                             | UIViewAutoresizingFlexibleLeftMargin
                             | UIViewAutoresizingFlexibleRightMargin;
 
@@ -136,14 +138,15 @@
   containerView.bounds = view.bounds;
   containerView.transform = view.transform;
   [banner getCurrentPresentingStateAndAtomicallySetPresentingState:YES];
-
+    
   CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
-  CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) / 2) - (350 / 2);
+  CGFloat width = 340;
+  CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) - width) / 2;
   CGFloat y = -60 - (MIN(statusBarSize.width, statusBarSize.height));
   if (!shouldCoverStatusBar) {
     y += MIN(statusBarSize.height, statusBarSize.width);
   }
-  banner.frame = CGRectMake(x, y, 350, 60);
+  banner.frame = CGRectMake(x, y, 340, 60);
 
   JCNotificationBannerTapHandlingBlock originalTapHandler = notification.tapHandler;
   JCNotificationBannerTapHandlingBlock wrappingTapHandler = ^{

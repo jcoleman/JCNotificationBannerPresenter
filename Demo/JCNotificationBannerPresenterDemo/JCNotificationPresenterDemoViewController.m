@@ -1,16 +1,25 @@
 #import "JCNotificationPresenterDemoViewController.h"
 #import "JCNotificationBannerPresenter.h"
+#import "JCNotificationBannerCustomView.h"
 
 @interface JCNotificationPresenterDemoViewController ()
 
 @property (weak, nonatomic) IBOutlet UITextField* titleTextField;
 @property (weak, nonatomic) IBOutlet UITextView* messageTextView;
+@property (weak, nonatomic) IBOutlet UISwitch* customizationSwitch;
+
 
 @end
 
 @implementation JCNotificationPresenterDemoViewController
 - (IBAction) presentNotificationButtonTapped:(id)sender {
-  [[JCNotificationBannerPresenter sharedPresenter] setDelegate:self];
+    NSLog(@"state is %d", self.customizationSwitch.on);
+  if (self.customizationSwitch.on) {
+    [[JCNotificationBannerPresenter sharedPresenter] setDelegate:self];
+  } else {
+    [[JCNotificationBannerPresenter sharedPresenter] setDelegate:nil];
+  }
+
   [JCNotificationBannerPresenter enqueueNotificationWithTitle:self.titleTextField.text
                                                       message:self.messageTextView.text
                                                    tapHandler:^{
@@ -24,8 +33,7 @@
 }
 
 - (JCNotificationBannerView*) makeViewForNotification:(JCNotificationBanner *)banner {
-    JCNotificationBannerView* view = [[JCNotificationBannerView alloc] initWithNotification:banner];
-    view.backgroundColor = [UIColor redColor];
+    JCNotificationBannerCustomView* view = [[JCNotificationBannerCustomView alloc] initWithNotification:banner];
     return view;
 }
 
@@ -33,6 +41,17 @@
     return NO;
 }
 
+- (double) getStartOpacity {
+    return 1.0;
+}
+
+- (double) getEndOpacity {
+    return 1.0;
+}
+
+- (double) getDisplayDurationSeconds {
+    return 2.0;
+}
 
 - (void)viewDidUnload {
   [self setMessageTextView:nil];

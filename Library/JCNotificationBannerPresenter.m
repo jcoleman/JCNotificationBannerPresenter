@@ -87,8 +87,11 @@
 - (void) presentNotification:(JCNotificationBanner*)notification {
     
   BOOL shouldCoverStatusBar = YES;
-  if ([self delegate]) {
+  if ([self delegate] && [[self delegate] respondsToSelector:@selector(shouldCoverStatusBar)]) {
+      NSLog(@"using delegate for shouldCoverStatusBar");
     shouldCoverStatusBar = [[self delegate] shouldCoverStatusBar];
+  } else {
+      NSLog(@"not using %@", self.delegate);
   }
 
   overlayWindow = [[JCNotificationBannerWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -102,9 +105,11 @@
 
   NSLog(@"my protocol is %@", [self delegate]);
   JCNotificationBannerView* banner;
-  if ([self delegate]) {
+  if ([self delegate] && [[self delegate] respondsToSelector:@selector(makeViewForNotification:)]) {
+       NSLog(@"using delegate for makeViewForNotification");
     banner = [[self delegate] makeViewForNotification:notification];
   } else {
+      NSLog(@"not using %@", self.delegate);
     banner = [[JCNotificationBannerView alloc] initWithNotification: notification];
   }
   banner.userInteractionEnabled = YES;
@@ -133,12 +138,11 @@
   [banner getCurrentPresentingStateAndAtomicallySetPresentingState:YES];
 
   CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
-  if (!shouldCoverStatusBar) {
-    statusBarSize.height = 0;
-  }
-
   CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) / 2) - (350 / 2);
   CGFloat y = -60 - (MIN(statusBarSize.width, statusBarSize.height));
+  if (!shouldCoverStatusBar) {
+    y += MIN(statusBarSize.height, statusBarSize.width);
+  }
   banner.frame = CGRectMake(x, y, 350, 60);
 
   JCNotificationBannerTapHandlingBlock originalTapHandler = notification.tapHandler;
@@ -159,27 +163,51 @@
   };
   notification.tapHandler = wrappingTapHandler;
 
+  double startOpacity;
+  if ([self delegate] && [[self delegate] respondsToSelector:@selector(getStartOpacity)]) {
+    startOpacity = [[self delegate] getStartOpacity];
+  } else {
+    startOpacity = 0;
+  }
+  double endOpacity;
+  if ([self delegate] && [[self delegate] respondsToSelector:@selector(getEndOpacity)]) {
+    endOpacity = [[self delegate] getEndOpacity];
+  } else {
+    endOpacity = 0.9;
+  }
+  double animationDuration;
+  if ([self delegate] && [[self delegate] respondsToSelector:@selector(getAnimationDurationSeconds)]) {
+    animationDuration = [[self delegate] getAnimationDurationSeconds];
+  } else {
+    animationDuration = 0.5;
+  }
+    
   // Slide it down while fading it in.
-  banner.alpha = 0;
-  [UIView animateWithDuration:0.5 delay:0
+  banner.alpha = startOpacity;    
+  [UIView animateWithDuration:animationDuration delay:0
                       options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseOut
                    animations:^{
                      CGRect newFrame = CGRectOffset(banner.frame, 0, banner.frame.size.height);
                      banner.frame = newFrame;
-                     banner.alpha = 0.9;
+                     banner.alpha = endOpacity;
                    } completion:^(BOOL finished) {
                      // Empty.
                    }];
 
 
   // On timeout, slide it up while fading it out.
-  double delayInSeconds = 5.0;
+  double delayInSeconds;
+  if ([self delegate] && [[self delegate] respondsToSelector:@selector(getDisplayDurationSeconds)]) {
+    delayInSeconds = [[self delegate] getDisplayDurationSeconds];
+  } else {
+    delayInSeconds = 5.0;
+  }
   dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
   dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseIn
+    [UIView animateWithDuration:animationDuration delay:0 options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
                        banner.frame = CGRectOffset(banner.frame, 0, -banner.frame.size.height);
-                       banner.alpha = 0;
+                       banner.alpha = startOpacity;
                      } completion:^(BOOL finished) {
                        if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
                          [banner removeFromSuperview];
@@ -193,5 +221,6 @@
                      }];
   });
 }
+
 
 @end

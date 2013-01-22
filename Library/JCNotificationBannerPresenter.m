@@ -15,8 +15,6 @@
 @end
 
 @implementation JCNotificationBannerPresenter
-
-@synthesize delegate;
     
 + (JCNotificationBannerPresenter*) sharedPresenter {
   static JCNotificationBannerPresenter* sharedPresenter = nil;
@@ -84,14 +82,10 @@
   });
 }
 
-- (void) presentNotification:(JCNotificationBanner*)notification {
-    
+- (void) presentNotification:(JCNotificationBanner*)notification {    
   BOOL shouldCoverStatusBar = YES;
-  if ([self delegate] && [[self delegate] respondsToSelector:@selector(shouldCoverStatusBar)]) {
-      NSLog(@"using delegate for shouldCoverStatusBar");
-    shouldCoverStatusBar = [[self delegate] shouldCoverStatusBar];
-  } else {
-      NSLog(@"not using %@", self.delegate);
+  if ([_delegate respondsToSelector:@selector(shouldCoverStatusBar)]) {
+      shouldCoverStatusBar = [[self delegate] shouldCoverStatusBar];
   }
 
   overlayWindow = [[JCNotificationBannerWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -104,13 +98,10 @@
     overlayWindow.windowLevel = UIWindowLevelStatusBar;
   }
 
-  NSLog(@"my protocol is %@", [self delegate]);
   JCNotificationBannerView* banner;
-  if ([self delegate] && [[self delegate] respondsToSelector:@selector(makeViewForNotification:)]) {
-       NSLog(@"using delegate for makeViewForNotification");
+  if ([_delegate respondsToSelector:@selector(makeViewForNotification:)]) {
     banner = [[self delegate] makeViewForNotification:notification];
   } else {
-      NSLog(@"not using %@", self.delegate);
     banner = [[JCNotificationBannerView alloc] initWithNotification: notification];
   }
   banner.userInteractionEnabled = YES;
@@ -167,13 +158,13 @@
   notification.tapHandler = wrappingTapHandler;
 
   double startOpacity;
-  if ([self delegate] && [[self delegate] respondsToSelector:@selector(getStartOpacity)]) {
+  if ([_delegate respondsToSelector:@selector(getStartOpacity)]) {
     startOpacity = [[self delegate] getStartOpacity];
   } else {
     startOpacity = 0;
   }
   double endOpacity;
-  if ([self delegate] && [[self delegate] respondsToSelector:@selector(getEndOpacity)]) {
+  if ([_delegate respondsToSelector:@selector(getEndOpacity)]) {
     endOpacity = [[self delegate] getEndOpacity];
   } else {
     endOpacity = 0.9;

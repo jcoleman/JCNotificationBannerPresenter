@@ -17,9 +17,7 @@
 @end
 
 @interface JCNotificationBannerPresenter : NSObject
-{
-    id <JCNotificationAppearanceDelegate,NSObject> delegate;
-}
+
 @property (strong) id <JCNotificationAppearanceDelegate,NSObject> delegate;
 
 + (JCNotificationBannerPresenter*) sharedPresenter;

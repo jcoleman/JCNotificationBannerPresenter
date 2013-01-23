@@ -216,7 +216,7 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
       CALayer *layer = [banner layer];
       layer.anchorPoint = CGPointMake(0.5f, 1);
       banner.frame = CGRectOffset(banner.frame, 0, banner.frame.size.height);
-      [self rotateLayer:layer fromAngle: 0 toAngle:90 duration: animationDuration onCompleted:^(){
+      [self rotateLayer:layer fromAngle: 0 toAngle:-90 duration: animationDuration onCompleted:^(){
           if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
               [banner removeFromSuperview];
               [overlayWindow removeFromSuperview];

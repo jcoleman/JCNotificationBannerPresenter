@@ -217,6 +217,20 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
   }
   dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
   dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+
+      // Add image of background to layer.
+      UIImage *image = [UIImage imageNamed:@"fake.png"];
+      CALayer *imageLayer = [CALayer layer];
+
+      CGRect frame = banner.frame;
+      frame.size = image.size;
+      frame.origin.x = 0;
+      imageLayer.frame = frame;
+      imageLayer.anchorPointZ = 0.5f * banner.frame.size.height;
+      imageLayer.contents = (id)[image CGImage];
+      [self rotateLayer:imageLayer fromAngle: -90 toAngle: 0 duration: animationDuration onCompleted: ^(){} ];
+      [[containerView layer] addSublayer:imageLayer];
+
       CALayer *layer = [banner layer];
       [self rotateLayer:layer fromAngle: 0 toAngle:90 duration: animationDuration onCompleted:^(){
           if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {

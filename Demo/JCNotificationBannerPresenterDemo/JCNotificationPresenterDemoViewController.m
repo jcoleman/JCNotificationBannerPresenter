@@ -38,7 +38,7 @@
 }
 
 - (BOOL) shouldCoverStatusBar {
-    return NO;
+    return YES;
 }
 
 - (double) getStartOpacity {
@@ -49,9 +49,6 @@
     return 1.0;
 }
 
-- (double) getDisplayDurationSeconds {
-    return 2.0;
-}
 
 - (void)viewDidUnload {
   [self setMessageTextView:nil];

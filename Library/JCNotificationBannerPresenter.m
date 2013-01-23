@@ -221,7 +221,7 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
       CALayer *layer = [banner layer];
 //      layer.transform = CATransform3DMakeRotation(0 * M_PI / 180.0f,
 //                                                  1, 0, 0);
-      [self rotateLayer:layer toAngle:90 duration: animationDuration onCompleted:^(){
+      [self rotateLayer:layer fromAngle: 0 toAngle:90 duration: animationDuration onCompleted:^(){
           if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
               [banner removeFromSuperview];
               [overlayWindow removeFromSuperview];
@@ -237,15 +237,17 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
 
 #pragma mark Animation Helpers
 
-- (void) rotateLayer: (CALayer *) imageLayer toAngle: (CGFloat) angleInDegrees duration: (CFTimeInterval) duration onCompleted: (void (^)()) onCompletedBlock
+- (void) rotateLayer: (CALayer *) imageLayer fromAngle: (CGFloat) fromAngle toAngle: (CGFloat) toAngle duration: (CFTimeInterval) duration onCompleted: (void (^)()) onCompletedBlock
 {
-    CGFloat rotationInRadians = angleInDegrees * M_PI / 180.0f;
+    CGFloat fromInRadians = fromAngle * M_PI / 180.0f;
+    CGFloat toInRadians = toAngle * M_PI / 180.0f;
 
     // Create animation that rotates by to the end rotation.
     CABasicAnimation *myAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.x"];
     myAnimation.delegate = self;
     myAnimation.duration = duration;
-    myAnimation.byValue = @(rotationInRadians);
+    myAnimation.fromValue = @(fromInRadians);
+    myAnimation.toValue = @(toInRadians);
     myAnimation.fillMode = kCAFillModeForwards;
     myAnimation.removedOnCompletion = NO;
     [myAnimation setValue: imageLayer forKey: @"layer"];

@@ -187,6 +187,8 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
   } else {
     animationDuration = 0.5;
   }
+    CGFloat statusBarHeight = MIN(statusBarSize.width, statusBarSize.height);
+    UIImage *image = [self captureWindowPartWithRect: CGRectMake(0, statusBarHeight, banner.frame.size.width, banner.frame.size.height - statusBarHeight)];
 
     // Prepare view transform
     CALayer *layer = [banner layer];
@@ -197,7 +199,6 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
     [self rotateLayer:layer fromAngle: -90 toAngle: 0 duration: animationDuration onCompleted: ^(){} ];
 
     // Add image of background to layer.
-    UIImage *image = [UIImage imageNamed:@"fake.png"];
     CALayer *imageLayer = [CALayer layer];
 
     CGRect frame = banner.frame;
@@ -219,7 +220,6 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
   dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 
       // Add image of background to layer.
-      UIImage *image = [UIImage imageNamed:@"fake.png"];
       CALayer *imageLayer = [CALayer layer];
 
       CGRect frame = banner.frame;
@@ -279,5 +279,44 @@ typedef void(^simpleCallbackBlock)();
     }
 }
 
+#pragma mark Screenshot 
+
+/**
+ * @returns part of the keyWindow screenshot rotated by 180 degrees.
+ */
+- (UIImage *) captureWindowPartWithRect: (CGRect) rect
+{
+    CGRect firstCaptureRect = rect;
+    firstCaptureRect.size.width += rect.origin.x;
+    firstCaptureRect.size.height += rect.origin.y;
+
+    UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+    
+    UIGraphicsBeginImageContextWithOptions(firstCaptureRect.size,YES,0.0f);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [keyWindow.layer renderInContext:context];
+    UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    CGRect contentRectToCrop = firstCaptureRect;
+
+    contentRectToCrop.origin.x *= capturedImage.scale;
+    contentRectToCrop.origin.y *= capturedImage.scale;
+    contentRectToCrop.size.width *= capturedImage.scale;
+    contentRectToCrop.size.height *= capturedImage.scale;
+
+    CGImageRef imageRef = CGImageCreateWithImageInRect([capturedImage CGImage], contentRectToCrop);
+    UIImage *croppedImage = [UIImage imageWithCGImage:imageRef scale:capturedImage.scale orientation: [[UIApplication sharedApplication] statusBarOrientation]];
+
+    // Uncomment this to save image in documents for debugging.
+//    
+    NSString *imagePath = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/capturedImage.jpg"]];
+    [UIImageJPEGRepresentation(capturedImage, 0.95) writeToFile:imagePath atomically:YES];
+
+    imagePath = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/croppedImage.jpg"]];
+    [UIImageJPEGRepresentation(croppedImage, 0.95) writeToFile:imagePath atomically:YES];
+
+    return croppedImage;
+}
 
 @end

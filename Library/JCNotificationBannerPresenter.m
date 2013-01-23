@@ -206,8 +206,6 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
   dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
   dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
       CALayer *layer = [banner layer];
-//      layer.transform = CATransform3DMakeRotation(0 * M_PI / 180.0f,
-//                                                  1, 0, 0);
       layer.anchorPoint = CGPointMake(0.5f, 1);
       banner.frame = CGRectOffset(banner.frame, 0, banner.frame.size.height);
       [self rotateLayer:layer fromAngle: 0 toAngle:90 duration: animationDuration onCompleted:^(){

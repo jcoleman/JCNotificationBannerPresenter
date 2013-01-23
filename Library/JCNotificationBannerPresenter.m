@@ -213,6 +213,10 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
     imageLayer.frame = frame;
     imageLayer.anchorPointZ = 0.5f * banner.frame.size.height;
     imageLayer.contents = (id)[image CGImage];
+    [imageLayer setShadowOffset:CGSizeMake(0, 1)];
+    [imageLayer setShadowColor:[[UIColor darkGrayColor] CGColor]];
+    [imageLayer setShadowRadius:3.0];
+    [imageLayer setShadowOpacity:0.8];
     [self rotateLayer:imageLayer fromAngle: 0 toAngle: 90 duration: animationDuration onCompleted: ^(){} ];
     [[containerView layer] addSublayer:imageLayer];
   // On timeout, slide it up while fading it out.
@@ -234,6 +238,10 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
       imageLayer.frame = frame;
       imageLayer.anchorPointZ = 0.5f * banner.frame.size.height;
       imageLayer.contents = (id)[image CGImage];
+      [imageLayer setShadowOffset:CGSizeMake(0, 1)];
+      [imageLayer setShadowColor:[[UIColor darkGrayColor] CGColor]];
+      [imageLayer setShadowRadius:3.0];
+      [imageLayer setShadowOpacity:0.8];
       [self rotateLayer:imageLayer fromAngle: -90 toAngle: 0 duration: animationDuration onCompleted: ^(){} ];
       [[containerView layer] addSublayer:imageLayer];
 

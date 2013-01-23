@@ -187,8 +187,14 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
   } else {
     animationDuration = 0.5;
   }
-    CGFloat statusBarHeight = MIN(statusBarSize.width, statusBarSize.height);
-    UIImage *image = [self captureWindowPartWithRect: CGRectMake(0, statusBarHeight, banner.frame.size.width, banner.frame.size.height - statusBarHeight)];
+
+    CGRect screenshotRect = CGRectMake(0, 0, banner.frame.size.width, banner.frame.size.height);
+    if (!shouldCoverStatusBar)
+    {
+        CGFloat statusBarHeight = MIN(statusBarSize.width, statusBarSize.height);
+        screenshotRect.origin.y = statusBarHeight;
+    }
+    UIImage *image = [self captureWindowPartWithRect: screenshotRect];
 
     // Prepare view transform
     CALayer *layer = [banner layer];

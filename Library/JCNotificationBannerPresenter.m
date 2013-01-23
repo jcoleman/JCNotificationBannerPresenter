@@ -190,17 +190,21 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
 
     // Prepare view transform
     CALayer *layer = [banner layer];
-    banner.alpha = startOpacity;    
-    layer.anchorPoint = CGPointMake(0.5f, 0);
-    banner.frame = CGRectOffset(banner.frame, 0, banner.frame.size.height * 0.5);
+    banner.alpha = startOpacity;
+    banner.frame = CGRectOffset(banner.frame, 0, banner.frame.size.height);
     banner.alpha = endOpacity;
-    [self rotateLayer:layer fromAngle: 90 toAngle: 0 duration: animationDuration onCompleted: ^(){} ];
+    layer.anchorPointZ = 0.5f * banner.frame.size.height;
+    [self rotateLayer:layer fromAngle: -90 toAngle: 0 duration: animationDuration onCompleted: ^(){} ];
 
     // Add image of background to layer.
     UIImage *image = [UIImage imageNamed:@"fake.png"];
     CALayer *imageLayer = [CALayer layer];
-    imageLayer.anchorPoint = CGPointMake(0.5f, 1);
-    imageLayer.frame = banner.frame;
+
+    CGRect frame = banner.frame;
+    frame.size = image.size;
+    frame.origin.x = 0;
+    imageLayer.frame = frame;
+    imageLayer.anchorPointZ = 0.5f * banner.frame.size.height;
     imageLayer.contents = (id)[image CGImage];
     [self rotateLayer:imageLayer fromAngle: 0 toAngle: 90 duration: animationDuration onCompleted: ^(){} ];
     [[containerView layer] addSublayer:imageLayer];
@@ -214,9 +218,7 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
   dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
   dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
       CALayer *layer = [banner layer];
-      layer.anchorPoint = CGPointMake(0.5f, 1);
-      banner.frame = CGRectOffset(banner.frame, 0, banner.frame.size.height);
-      [self rotateLayer:layer fromAngle: 0 toAngle:-90 duration: animationDuration onCompleted:^(){
+      [self rotateLayer:layer fromAngle: 0 toAngle:90 duration: animationDuration onCompleted:^(){
           if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
               [banner removeFromSuperview];
               [overlayWindow removeFromSuperview];

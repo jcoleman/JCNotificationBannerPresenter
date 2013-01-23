@@ -196,6 +196,14 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
     banner.alpha = endOpacity;
     [self rotateLayer:layer fromAngle: 90 toAngle: 0 duration: animationDuration onCompleted: ^(){} ];
 
+    // Add image of background to layer.
+    UIImage *image = [UIImage imageNamed:@"fake.png"];
+    CALayer *imageLayer = [CALayer layer];
+    imageLayer.anchorPoint = CGPointMake(0.5f, 1);
+    imageLayer.frame = banner.frame;
+    imageLayer.contents = (id)[image CGImage];
+    [self rotateLayer:imageLayer fromAngle: 0 toAngle: 90 duration: animationDuration onCompleted: ^(){} ];
+    [[containerView layer] addSublayer:imageLayer];
   // On timeout, slide it up while fading it out.
   double delayInSeconds;
   if ([self delegate] && [[self delegate] respondsToSelector:@selector(getDisplayDurationSeconds)]) {

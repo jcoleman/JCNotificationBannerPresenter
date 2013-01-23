@@ -191,23 +191,10 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
     // Prepare view transform
     CALayer *layer = [banner layer];
     banner.alpha = startOpacity;    
-    layer.anchorPoint = CGPointMake(0.5f, 1);
-    banner.frame = CGRectOffset(banner.frame, 0, -0.5);
-    layer.transform = CATransform3DMakeRotation(0 * M_PI / 180.0f,
-                                                1, 0, 0);
-    
-  // Slide it down while fading it in.
-  banner.alpha = startOpacity;    
-  [UIView animateWithDuration:animationDuration delay:0
-                      options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseOut
-                   animations:^{
-                     CGRect newFrame = CGRectOffset(banner.frame, 0, banner.frame.size.height * 1.5);
-                     banner.frame = newFrame;
-                     banner.alpha = endOpacity;
-                   } completion:^(BOOL finished) {
-                     // Empty.
-                   }];
-
+    layer.anchorPoint = CGPointMake(0.5f, 0);
+    banner.frame = CGRectOffset(banner.frame, 0, banner.frame.size.height * 0.5);
+    banner.alpha = endOpacity;
+    [self rotateLayer:layer fromAngle: 90 toAngle: 0 duration: animationDuration onCompleted: ^(){} ];
 
   // On timeout, slide it up while fading it out.
   double delayInSeconds;

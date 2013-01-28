@@ -143,13 +143,13 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
   [banner getCurrentPresentingStateAndAtomicallySetPresentingState:YES];
     
   CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
-  CGFloat width = 340;
+  CGFloat width = 320;
   CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) - width) / 2;
   CGFloat y = -60 - (MIN(statusBarSize.width, statusBarSize.height));
   if (!shouldCoverStatusBar) {
     y += MIN(statusBarSize.height, statusBarSize.width);
   }
-  banner.frame = CGRectMake(x, y, 340, 60);
+  banner.frame = CGRectMake(x, y, width, 60);
 
   JCNotificationBannerTapHandlingBlock originalTapHandler = notification.tapHandler;
   JCNotificationBannerTapHandlingBlock wrappingTapHandler = ^{
@@ -206,11 +206,7 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
 
     // Add image of background to layer.
     CALayer *imageLayer = [CALayer layer];
-
-    CGRect frame = banner.frame;
-    frame.size = image.size;
-    frame.origin.x = 0;
-    imageLayer.frame = frame;
+    imageLayer.frame = banner.frame;
     imageLayer.anchorPointZ = 0.5f * banner.frame.size.height;
     imageLayer.contents = (id)[image CGImage];
     [imageLayer setShadowOffset:CGSizeMake(0, 1)];
@@ -231,11 +227,7 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
 
       // Add image of background to layer.
       CALayer *imageLayer = [CALayer layer];
-
-      CGRect frame = banner.frame;
-      frame.size = image.size;
-      frame.origin.x = 0;
-      imageLayer.frame = frame;
+      imageLayer.frame =  banner.frame;
       imageLayer.anchorPointZ = 0.5f * banner.frame.size.height;
       imageLayer.contents = (id)[image CGImage];
       [imageLayer setShadowOffset:CGSizeMake(0, 1)];

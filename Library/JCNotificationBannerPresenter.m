@@ -287,11 +287,9 @@ typedef void(^simpleCallbackBlock)();
  */
 - (UIImage *) captureWindowPartWithRect: (CGRect) rect
 {
-    CGRect firstCaptureRect = rect;
-    firstCaptureRect.size.width += rect.origin.x;
-    firstCaptureRect.size.height += rect.origin.y;
-
     UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+
+    CGRect firstCaptureRect = keyWindow.bounds;
     
     UIGraphicsBeginImageContextWithOptions(firstCaptureRect.size,YES,0.0f);
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -299,7 +297,33 @@ typedef void(^simpleCallbackBlock)();
     UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
 
-    CGRect contentRectToCrop = firstCaptureRect;
+    CGRect contentRectToCrop = rect;
+
+    CGRect originalRect = rect;
+    switch ([UIApplication sharedApplication].statusBarOrientation) {
+        case UIInterfaceOrientationLandscapeLeft:
+            contentRectToCrop.origin.x = originalRect.origin.y;
+            contentRectToCrop.origin.y = keyWindow.bounds.size.height - originalRect.origin.x - originalRect.size.width;
+            contentRectToCrop.size.width = originalRect.size.height;
+            contentRectToCrop.size.height = originalRect.size.width;
+            break;
+
+        case UIInterfaceOrientationLandscapeRight:
+            contentRectToCrop.origin.x = keyWindow.bounds.size.width - originalRect.origin.y - originalRect.size.height;
+            contentRectToCrop.origin.y = keyWindow.bounds.size.height - originalRect.origin.x - originalRect.size.width ;
+            contentRectToCrop.size.width = originalRect.size.height;
+            contentRectToCrop.size.height = originalRect.size.width;
+            break;
+
+        case UIInterfaceOrientationPortrait:
+            break;
+
+        case UIInterfaceOrientationPortraitUpsideDown:
+            break;
+
+        default:
+            break;
+    }
 
     contentRectToCrop.origin.x *= capturedImage.scale;
     contentRectToCrop.origin.y *= capturedImage.scale;

@@ -38,7 +38,7 @@
 }
 
 - (BOOL) shouldCoverStatusBar {
-    return YES;
+    return NO;
 }
 
 - (double) getStartOpacity {

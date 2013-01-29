@@ -334,6 +334,11 @@ typedef void(^simpleCallbackBlock)();
             break;
 
         case UIInterfaceOrientationPortraitUpsideDown:
+            rotationNeeded = 180;
+            contentRectToCrop.origin.x = originalRect.origin.x;
+            contentRectToCrop.origin.y = keyWindow.bounds.size.height - originalRect.origin.y - originalRect.size.height;
+            contentRectToCrop.size.width = originalRect.size.width;
+            contentRectToCrop.size.height = originalRect.size.height;
             break;
 
         default:

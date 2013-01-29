@@ -1,6 +1,18 @@
 #import "JCNotificationBannerPresenter.h"
 #import <QuartzCore/QuartzCore.h>
 
+
+#import <Foundation/Foundation.h>
+
+/// UIImage Extensions for preparing screenshots under banner by HardyMacia
+/// (Catamount Software).
+/// http://www.catamount.com/forums/viewtopic.php?f=21&t=967
+@interface UIImage (CS_Extensions)
+- (UIImage *)imageRotatedByDegrees:(CGFloat)degrees;
+@end
+
+#pragma mark -
+
 @interface JCNotificationBannerPresenter () {
   NSMutableArray* enqueuedNotifications;
   NSLock* isPresentingMutex;
@@ -298,10 +310,11 @@ typedef void(^simpleCallbackBlock)();
     UIGraphicsEndImageContext();
 
     CGRect contentRectToCrop = rect;
-
+    CGFloat rotationNeeded = 0;
     CGRect originalRect = rect;
     switch ([UIApplication sharedApplication].statusBarOrientation) {
         case UIInterfaceOrientationLandscapeLeft:
+            rotationNeeded = 90;
             contentRectToCrop.origin.x = originalRect.origin.y;
             contentRectToCrop.origin.y = keyWindow.bounds.size.height - originalRect.origin.x - originalRect.size.width;
             contentRectToCrop.size.width = originalRect.size.height;
@@ -309,12 +322,14 @@ typedef void(^simpleCallbackBlock)();
             break;
 
         case UIInterfaceOrientationLandscapeRight:
+            rotationNeeded = -90;
             contentRectToCrop.origin.x = keyWindow.bounds.size.width - originalRect.origin.y - originalRect.size.height;
             contentRectToCrop.origin.y = keyWindow.bounds.size.height - originalRect.origin.x - originalRect.size.width ;
             contentRectToCrop.size.width = originalRect.size.height;
             contentRectToCrop.size.height = originalRect.size.width;
             break;
 
+            
         case UIInterfaceOrientationPortrait:
             break;
 
@@ -331,7 +346,7 @@ typedef void(^simpleCallbackBlock)();
     contentRectToCrop.size.height *= capturedImage.scale;
 
     CGImageRef imageRef = CGImageCreateWithImageInRect([capturedImage CGImage], contentRectToCrop);
-    UIImage *croppedImage = [UIImage imageWithCGImage:imageRef scale:capturedImage.scale orientation: [[UIApplication sharedApplication] statusBarOrientation]];
+    UIImage *croppedImage = [UIImage imageWithCGImage:imageRef scale:capturedImage.scale orientation: UIImageOrientationUp];
 
     // Uncomment this to save image in documents for debugging.
 //    
@@ -341,7 +356,53 @@ typedef void(^simpleCallbackBlock)();
     imagePath = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/croppedImage.jpg"]];
     [UIImageJPEGRepresentation(croppedImage, 0.95) writeToFile:imagePath atomically:YES];
 
+    if (rotationNeeded)
+    {
+        croppedImage = [croppedImage imageRotatedByDegrees: rotationNeeded];
+
+        imagePath = [NSHomeDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"Documents/croppedRotatedImage.jpg"]];
+        [UIImageJPEGRepresentation(croppedImage, 0.95) writeToFile:imagePath atomically:YES];
+
+    }
+
     return croppedImage;
+}
+
+
+@end
+
+#pragma mark - UIImage Extensions
+
+CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
+CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
+
+@implementation UIImage (CS_Extensions)
+
+- (UIImage *)imageRotatedByDegrees:(CGFloat)degrees
+{
+    // calculate the size of the rotated view's containing box for our drawing space
+    UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.size.width, self.size.height)];
+    CGAffineTransform t = CGAffineTransformMakeRotation(DegreesToRadians(degrees));
+    rotatedViewBox.transform = t;
+    CGSize rotatedSize = rotatedViewBox.frame.size;
+
+    // Create the bitmap context
+    UIGraphicsBeginImageContext(rotatedSize);
+    CGContextRef bitmap = UIGraphicsGetCurrentContext();
+
+    // Move the origin to the middle of the image so we will rotate and scale around the center.
+    CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
+
+    //   // Rotate the image context
+    CGContextRotateCTM(bitmap, DegreesToRadians(degrees));
+
+    // Now, draw the rotated/scaled image into the context
+    CGContextScaleCTM(bitmap, 1.0, -1.0);
+    CGContextDrawImage(bitmap, CGRectMake(-self.size.width / 2, -self.size.height / 2, self.size.width, self.size.height), [self CGImage]);
+    
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 @end

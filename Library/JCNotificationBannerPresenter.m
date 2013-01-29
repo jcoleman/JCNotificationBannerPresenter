@@ -144,12 +144,11 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
     
   CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
   CGFloat width = 320;
+  CGFloat height = 60;
+  CGFloat statusBarHeight = (MIN(statusBarSize.width, statusBarSize.height));
   CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) - width) / 2;
-  CGFloat y = -60 - (MIN(statusBarSize.width, statusBarSize.height));
-  if (!shouldCoverStatusBar) {
-    y += MIN(statusBarSize.height, statusBarSize.width);
-  }
-  banner.frame = CGRectMake(x, y, width, 60);
+  CGFloat y = -60 - ((shouldCoverStatusBar )? statusBarHeight : 0);
+  banner.frame = CGRectMake(x, y, width, height);
 
   JCNotificationBannerTapHandlingBlock originalTapHandler = notification.tapHandler;
   JCNotificationBannerTapHandlingBlock wrappingTapHandler = ^{
@@ -188,13 +187,9 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z)
     animationDuration = 0.5;
   }
 
-    CGRect screenshotRect = CGRectMake(0, 0, banner.frame.size.width, banner.frame.size.height);
-    if (!shouldCoverStatusBar)
-    {
-        CGFloat statusBarHeight = MIN(statusBarSize.width, statusBarSize.height);
-        screenshotRect.origin.y = statusBarHeight;
-    }
-    UIImage *image = [self captureWindowPartWithRect: screenshotRect];
+    CGRect bannerFrameAfterTransition = banner.frame;
+    bannerFrameAfterTransition.origin.y = 0 + ((!shouldCoverStatusBar )? statusBarHeight : 0);
+    UIImage *image = [self captureWindowPartWithRect: bannerFrameAfterTransition];
 
     // Prepare view transform
     CALayer *layer = [banner layer];

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		30D2D905165698E1000AE505 /* JCNotificationBannerCustomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 30D2D904165698E1000AE505 /* JCNotificationBannerCustomView.m */; };
+		6D0CCF3716AF604200A28EB5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D0CCF3616AF604200A28EB5 /* QuartzCore.framework */; };
 		C41E33061640322C0049334F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C41E33051640322C0049334F /* UIKit.framework */; };
 		C41E33081640322C0049334F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C41E33071640322C0049334F /* Foundation.framework */; };
 		C41E330A1640322C0049334F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C41E33091640322C0049334F /* CoreGraphics.framework */; };
@@ -26,6 +28,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		30D2D903165698E1000AE505 /* JCNotificationBannerCustomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCNotificationBannerCustomView.h; sourceTree = "<group>"; };
+		30D2D904165698E1000AE505 /* JCNotificationBannerCustomView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCNotificationBannerCustomView.m; sourceTree = "<group>"; };
+		6D0CCF3616AF604200A28EB5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C41E33011640322C0049334F /* JCNotificationBannerPresenterDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JCNotificationBannerPresenterDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C41E33051640322C0049334F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C41E33071640322C0049334F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -59,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D0CCF3716AF604200A28EB5 /* QuartzCore.framework in Frameworks */,
 				C41E33061640322C0049334F /* UIKit.framework in Frameworks */,
 				C41E33081640322C0049334F /* Foundation.framework in Frameworks */,
 				C41E330A1640322C0049334F /* CoreGraphics.framework in Frameworks */,
@@ -88,6 +94,7 @@
 		C41E33041640322C0049334F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6D0CCF3616AF604200A28EB5 /* QuartzCore.framework */,
 				C41E33051640322C0049334F /* UIKit.framework */,
 				C41E33071640322C0049334F /* Foundation.framework */,
 				C41E33091640322C0049334F /* CoreGraphics.framework */,
@@ -104,6 +111,8 @@
 				C41E332D1640354D0049334F /* DemoStoryboard.storyboard */,
 				C41E332F164035F70049334F /* JCNotificationPresenterDemoViewController.h */,
 				C41E3330164035F70049334F /* JCNotificationPresenterDemoViewController.m */,
+				30D2D903165698E1000AE505 /* JCNotificationBannerCustomView.h */,
+				30D2D904165698E1000AE505 /* JCNotificationBannerCustomView.m */,
 				C41E330C1640322C0049334F /* Supporting Files */,
 			);
 			path = JCNotificationBannerPresenterDemo;
@@ -216,6 +225,7 @@
 				C41E3340164036F20049334F /* JCNotificationBannerView.m in Sources */,
 				C41E3341164036F20049334F /* JCNotificationBannerViewController.m in Sources */,
 				C41E3342164036F20049334F /* JCNotificationBannerWindow.m in Sources */,
+				30D2D905165698E1000AE505 /* JCNotificationBannerCustomView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

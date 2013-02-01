@@ -1,15 +1,15 @@
 #import "JCNotificationBannerView.h"
 
-const CGFloat kJCNotificationBannerViewOutlineWidth = 2;
-const CGFloat kJCNotificationBannerViewMarginY = 5;
-const CGFloat kJCNotificationBannerViewMarginX = 15;
+const CGFloat kJCNotificationBannerViewOutlineWidth = 2.0;
+const CGFloat kJCNotificationBannerViewMarginX = 15.0;
+const CGFloat kJCNotificationBannerViewMarginY = 5.0;
 
 @interface JCNotificationBannerView () {
   BOOL isPresented;
   NSObject* isPresentedMutex;
 }
 
-- (void) handleSingleTap:(UIGestureRecognizer *)gestureRecognizer;
+- (void) handleSingleTap:(UIGestureRecognizer*)gestureRecognizer;
 
 @end
 
@@ -93,16 +93,12 @@ const CGFloat kJCNotificationBannerViewMarginX = 15;
   CGFloat borderX = kJCNotificationBannerViewOutlineWidth + kJCNotificationBannerViewMarginX;
   CGFloat currentX = borderX;
   CGFloat currentY = borderY;
-  CGFloat contentWidth = self.frame.size.width - (borderX * 2);
+  CGFloat contentWidth = self.frame.size.width - (borderX * 2.0);
 
-  //self.iconImageView.frame = CGRectMake(currentX, currentY, contentHeight, contentHeight);
-  //currentX += contentHeight + kJCNotificationBannerViewMargin;
-
-  currentY += 2;
-  NSLog(@"currentX, %f, textWidth, %f", currentX, contentWidth);
+  currentY += 2.0;
   if (hasTitle) {
-    self.titleLabel.frame = CGRectMake(currentX, currentY, contentWidth, 22);
-    currentY += 22;
+    self.titleLabel.frame = CGRectMake(currentX, currentY, contentWidth, 22.0);
+    currentY += 22.0;
   }
   self.messageLabel.frame = CGRectMake(currentX, currentY, contentWidth, (self.frame.size.height - borderY) - currentY);
   [self.messageLabel sizeToFit];

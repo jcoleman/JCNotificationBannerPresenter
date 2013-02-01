@@ -4,10 +4,10 @@
 #import "JCNotificationBannerWindow.h"
 #import "JCNotificationBannerViewController.h"
 
-@protocol JCNotificationAppearanceDelegate <NSObject>
+@protocol JCNotificationBannerPresenterDelegate <NSObject>
 @optional
 
-- (JCNotificationBannerView*) makeViewForNotification: (JCNotificationBanner*) banner;
+- (JCNotificationBannerView*) makeViewForNotification:(JCNotificationBanner*)banner;
 - (BOOL) shouldCoverStatusBar;
 - (double) getDisplayDurationSeconds;
 - (double) getAnimationDurationSeconds;
@@ -18,7 +18,7 @@
 
 @interface JCNotificationBannerPresenter : NSObject
 
-@property (strong) id <JCNotificationAppearanceDelegate,NSObject> delegate;
+@property (strong) id <JCNotificationBannerPresenterDelegate> delegate;
 
 + (JCNotificationBannerPresenter*) sharedPresenter;
 + (void) enqueueNotificationWithTitle:(NSString*)title

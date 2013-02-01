@@ -12,12 +12,12 @@
 @end
 
 @implementation JCNotificationPresenterDemoViewController
+
 - (IBAction) presentNotificationButtonTapped:(id)sender {
-    NSLog(@"state is %d", self.customizationSwitch.on);
   if (self.customizationSwitch.on) {
-    [[JCNotificationBannerPresenter sharedPresenter] setDelegate:self];
+    [JCNotificationBannerPresenter sharedPresenter].delegate = self;
   } else {
-    [[JCNotificationBannerPresenter sharedPresenter] setDelegate:nil];
+    [JCNotificationBannerPresenter sharedPresenter].delegate = nil;
   }
 
   [JCNotificationBannerPresenter enqueueNotificationWithTitle:self.titleTextField.text
@@ -38,21 +38,21 @@
 }
 
 - (BOOL) shouldCoverStatusBar {
-    return NO;
+  return NO;
 }
 
 - (double) getStartOpacity {
-    return 1.0;
+  return 1.0;
 }
 
 - (double) getEndOpacity {
-    return 1.0;
+  return 1.0;
 }
 
-
-- (void)viewDidUnload {
+- (void) viewDidUnload {
   [self setMessageTextView:nil];
   [self setTitleTextField:nil];
   [super viewDidUnload];
 }
+
 @end

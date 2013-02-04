@@ -1,6 +1,6 @@
-#import "JCNotificationBannerCustomView.h"
+#import "JCNotificationBannerViewIOSStyle.h"
 
-@implementation JCNotificationBannerCustomView
+@implementation JCNotificationBannerViewIOSStyle
 
 - (id) initWithNotification:(JCNotificationBanner*)notification {
   self = [super initWithNotification:notification];

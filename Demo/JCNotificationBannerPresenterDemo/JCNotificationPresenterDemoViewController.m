@@ -1,6 +1,6 @@
 #import "JCNotificationPresenterDemoViewController.h"
 #import "JCNotificationBannerPresenter.h"
-#import "JCNotificationBannerCustomView.h"
+#import "JCNotificationBannerViewIOSStyle.h"
 
 @interface JCNotificationPresenterDemoViewController ()
 
@@ -34,7 +34,7 @@
 }
 
 - (JCNotificationBannerView*) makeViewForNotification:(JCNotificationBanner *)banner {
-    JCNotificationBannerCustomView* view = [[JCNotificationBannerCustomView alloc] initWithNotification:banner];
+    JCNotificationBannerViewIOSStyle* view = [[JCNotificationBannerViewIOSStyle alloc] initWithNotification:banner];
     return view;
 }
 

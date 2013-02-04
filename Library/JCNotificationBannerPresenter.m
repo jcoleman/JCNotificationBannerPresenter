@@ -1,4 +1,5 @@
 #import "JCNotificationBannerPresenter.h"
+#import "JCNotificationBannerViewIOSStyle.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface JCNotificationBannerPresenter () {
@@ -12,6 +13,10 @@
 - (JCNotificationBanner*) dequeueNotification;
 - (void) beginPresentingNotifications;
 - (void) presentNotification:(JCNotificationBanner*)notification;
+- (void) enqueueNotificationWithTitle:(NSString*)title
+                              message:(NSString*)message
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler
+                                style:(JCNotificationBannerStyle) style;
 
 @end
 
@@ -35,15 +40,6 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
   return sharedPresenter;
 }
 
-+ (void) enqueueNotificationWithTitle:(NSString*)title
-                              message:(NSString*)message
-                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
-  [[JCNotificationBannerPresenter sharedPresenter] enqueueNotificationWithTitle:title
-                                                                        message:message
-                                                                     tapHandler:tapHandler];
-}
-
-
 - (JCNotificationBannerPresenter*) init {
   self = [super init];
   if (self) {
@@ -54,12 +50,36 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
   return self;
 }
 
+/** Adds notification with iOS banner Style to queue with given parameters. */
++ (void) enqueueNotificationWithTitle:(NSString*)title
+                              message:(NSString*)message
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
+  [[self sharedPresenter] enqueueNotificationWithTitle: title
+                                               message: message
+                                            tapHandler: tapHandler
+                                                 style: kJCNotificationBannerPresenterStyleIOSBanner];
+}
+
+/** Adds notification to queue with given parameters. */
++ (void) enqueueNotificationWithTitle:(NSString*)title
+                              message:(NSString*)message
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler
+                                style:(JCNotificationBannerStyle)style
+{
+  [[self sharedPresenter] enqueueNotificationWithTitle: title
+                                               message: message
+                                            tapHandler: tapHandler
+                                                 style: style ];
+}
+
 - (void) enqueueNotificationWithTitle:(NSString*)title
                        message:(NSString*)message
-                    tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
+                    tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler
+                         style:(JCNotificationBannerStyle) style {
   JCNotificationBanner* notification = [[JCNotificationBanner alloc] initWithTitle:title
                                                                            message:message
-                                                                        tapHandler:tapHandler];
+                                                                        tapHandler:tapHandler
+                                                                             style:style];
   @synchronized(notificationQueueMutex) {
     [enqueuedNotifications addObject:notification];
   }
@@ -92,28 +112,120 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
   });
 }
 
-- (void) presentNotification:(JCNotificationBanner*)notification {
-  BOOL shouldCoverStatusBar = YES;
-  if ([_delegate respondsToSelector:@selector(shouldCoverStatusBar)]) {
-      shouldCoverStatusBar = [[self delegate] shouldCoverStatusBar];
+- (void) presentNotification:(JCNotificationBanner*)notification
+{
+  switch (notification.style) {
+    case kJCNotificationBannerPresenterStyleAndroidToast:
+      [self presentNotificationAndroidStyle: notification];
+      break;
+    case kJCNotificationBannerPresenterStyleIOSBanner:
+      [self presentNotificationIOSStyle: notification];
+    default:
+      break;
   }
+}
 
+- (void) presentNotificationAndroidStyle:(JCNotificationBanner*)notification {
+    overlayWindow = [[JCNotificationBannerWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    overlayWindow.userInteractionEnabled = YES;
+    overlayWindow.opaque = NO;
+    overlayWindow.hidden = NO;
+    overlayWindow.windowLevel = UIWindowLevelStatusBar;
+
+    JCNotificationBannerView* banner = [[JCNotificationBannerView alloc] initWithNotification:notification];
+    banner.userInteractionEnabled = YES;
+
+    bannerViewController = [JCNotificationBannerViewController new];
+    overlayWindow.rootViewController = bannerViewController;
+
+    UIView* containerView = [UIView new];
+    containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    containerView.userInteractionEnabled = YES;
+    containerView.opaque = NO;
+
+    overlayWindow.bannerView = banner;
+
+    [containerView addSubview:banner];
+    bannerViewController.view = containerView;
+
+
+    banner.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin
+    | UIViewAutoresizingFlexibleLeftMargin
+    | UIViewAutoresizingFlexibleRightMargin;
+
+    UIView* view = ((UIView*)[[[[UIApplication sharedApplication] keyWindow] subviews] objectAtIndex:0]);
+    containerView.bounds = view.bounds;
+    containerView.transform = view.transform;
+    [banner getCurrentPresentingStateAndAtomicallySetPresentingState:YES];
+
+    CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
+    CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) / 2) - (350 / 2);
+    CGFloat y = -60 - (MIN(statusBarSize.width, statusBarSize.height));
+    banner.frame = CGRectMake(x, y, 350, 60);
+
+    JCNotificationBannerTapHandlingBlock originalTapHandler = notification.tapHandler;
+    JCNotificationBannerTapHandlingBlock wrappingTapHandler = ^{
+        if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
+            if (originalTapHandler) {
+                originalTapHandler();
+            }
+
+            [banner removeFromSuperview];
+            [overlayWindow removeFromSuperview];
+            overlayWindow = nil;
+
+            // Process any notifications enqueued during this one's presentation.
+            [isPresentingMutex unlock];
+            [self beginPresentingNotifications];
+        }
+    };
+    notification.tapHandler = wrappingTapHandler;
+
+    // Slide it down while fading it in.
+    banner.alpha = 0;
+    [UIView animateWithDuration:0.5 delay:0
+                        options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseOut
+                     animations:^{
+                         CGRect newFrame = CGRectOffset(banner.frame, 0, banner.frame.size.height);
+                         banner.frame = newFrame;
+                         banner.alpha = 0.9;
+                     } completion:^(BOOL finished) {
+                         // Empty.
+                     }];
+
+
+    // On timeout, slide it up while fading it out.
+    double delayInSeconds = 5.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             banner.frame = CGRectOffset(banner.frame, 0, -banner.frame.size.height);
+                             banner.alpha = 0;
+                         } completion:^(BOOL finished) {
+                             if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
+                                 [banner removeFromSuperview];
+                                 [overlayWindow removeFromSuperview];
+                                 overlayWindow = nil;
+
+                                 // Process any notifications enqueued during this one's presentation.
+                                 [isPresentingMutex unlock];
+                                 [self beginPresentingNotifications];
+                             }
+                         }];
+    });
+}
+
+- (void) presentNotificationIOSStyle:(JCNotificationBanner*)notification {
   overlayWindow = [[JCNotificationBannerWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   overlayWindow.userInteractionEnabled = YES;
   overlayWindow.autoresizesSubviews = YES;
   overlayWindow.opaque = NO;
   overlayWindow.hidden = NO;
-  if (shouldCoverStatusBar) {
-    overlayWindow.windowLevel = UIWindowLevelStatusBar;
-  }
 
-  JCNotificationBannerView* banner;
-  if ([self.delegate respondsToSelector:@selector(makeViewForNotification:)]) {
-    banner = [[self delegate] makeViewForNotification:notification];
-  } else {
-    banner = [[JCNotificationBannerView alloc] initWithNotification: notification];
-  }
+  JCNotificationBannerView* banner = [[JCNotificationBannerViewIOSStyle alloc] initWithNotification:notification];
   banner.userInteractionEnabled = YES;
 
   bannerViewController = [JCNotificationBannerViewController new];
@@ -142,9 +254,8 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
   CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
   CGFloat width = 320.0;
   CGFloat height = 60.0;
-  CGFloat statusBarHeight = (MIN(statusBarSize.width, statusBarSize.height));
   CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) - width) / 2.0;
-  CGFloat y = -60.0 - ((shouldCoverStatusBar )? statusBarHeight : 0.0);
+  CGFloat y = -60.0;
   banner.frame = CGRectMake(x, y, width, height);
 
   JCNotificationBannerTapHandlingBlock originalTapHandler = notification.tapHandler;
@@ -165,27 +276,12 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
   };
   notification.tapHandler = wrappingTapHandler;
 
-  double startOpacity;
-  if ([self.delegate respondsToSelector:@selector(getStartOpacity)]) {
-    startOpacity = [self.delegate getStartOpacity];
-  } else {
-    startOpacity = 0;
-  }
-  double endOpacity;
-  if ([self.delegate respondsToSelector:@selector(getEndOpacity)]) {
-    endOpacity = [self.delegate getEndOpacity];
-  } else {
-    endOpacity = 0.9;
-  }
-  double animationDuration;
-  if ([self.delegate respondsToSelector:@selector(getAnimationDurationSeconds)]) {
-    animationDuration = [self.delegate getAnimationDurationSeconds];
-  } else {
-    animationDuration = 0.5;
-  }
+  double startOpacity = 1.0;
+  double endOpacity = 1.0;
+  double animationDuration = 0.5;
 
   CGRect bannerFrameAfterTransition = banner.frame;
-  bannerFrameAfterTransition.origin.y = 0 + ((!shouldCoverStatusBar )? statusBarHeight : 0);
+  bannerFrameAfterTransition.origin.y = MIN(statusBarSize.width, statusBarSize.height);
   UIImage *image = [self captureWindowPartWithRect: bannerFrameAfterTransition];
 
   // Prepare view transform
@@ -209,12 +305,7 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
   [containerView.layer addSublayer:imageLayer];
 
   // On timeout, slide it up while fading it out.
-  double delayInSeconds;
-  if ([self.delegate respondsToSelector:@selector(getDisplayDurationSeconds)]) {
-    delayInSeconds = [self.delegate getDisplayDurationSeconds];
-  } else {
-    delayInSeconds = 5.0;
-  }
+  double delayInSeconds = 5.0;
   dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
   dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
     // Add image of background to layer.

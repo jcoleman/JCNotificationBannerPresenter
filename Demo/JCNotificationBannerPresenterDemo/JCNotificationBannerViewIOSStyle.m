@@ -1,6 +1,6 @@
-#import "JCNotificationBannerCustomView.h"
+#import "JCNotificationBannerViewIOSStyle.h"
 
-@implementation JCNotificationBannerCustomView
+@implementation JCNotificationBannerViewIOSStyle
 
 - (id) initWithNotification:(JCNotificationBanner*)notification {
   self = [super initWithNotification:notification];
@@ -17,11 +17,8 @@
   return self;
 }
 
-- (void) layoutSubviews {
-  [super layoutSubviews];
-  CGRect messageFrame = self.messageLabel.frame;
-  messageFrame.origin.y = 7;
-  self.messageLabel.frame = messageFrame;
+/** Overriden to do no custom drawing */
+- (void) drawRect:(CGRect)rect {
 }
 
 @end

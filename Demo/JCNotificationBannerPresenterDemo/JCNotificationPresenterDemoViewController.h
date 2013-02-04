@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 #import "JCNotificationBannerPresenter.h"
 
-@interface JCNotificationPresenterDemoViewController : UIViewController <JCNotificationBannerPresenterDelegate>
+@interface JCNotificationPresenterDemoViewController : UIViewController
 
 
 @end

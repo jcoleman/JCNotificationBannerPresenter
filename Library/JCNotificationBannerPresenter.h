@@ -24,7 +24,8 @@
 
 - (void) enqueueNotificationWithTitle:(NSString*)title
                               message:(NSString*)message
-                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler;
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler
+                                style:(JCNotificationBannerStyle)style;
 
 
 @end

@@ -14,13 +14,13 @@
 @implementation JCNotificationPresenterDemoViewController
 
 - (IBAction) presentNotificationButtonTapped:(id)sender {
+  JCNotificationBannerStyle style = kJCNotificationBannerPresenterStyleAndroidToast;
   if (self.customizationSwitch.on) {
+    style = kJCNotificationBannerPresenterStyleIOSBanner;
     [JCNotificationBannerPresenter sharedPresenter].delegate = self;
-  } else {
-    [JCNotificationBannerPresenter sharedPresenter].delegate = nil;
   }
 
-  [JCNotificationBannerPresenter enqueueNotificationWithTitle:self.titleTextField.text
+  [[JCNotificationBannerPresenter sharedPresenter] enqueueNotificationWithTitle:self.titleTextField.text
                                                       message:self.messageTextView.text
                                                    tapHandler:^{
                                                      UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Tapped notification"
@@ -29,7 +29,8 @@
                                                                                            cancelButtonTitle:@"OK"
                                                                                            otherButtonTitles:nil];
                                                      [alert show];
-                                                   }];
+                                                   }
+                                                        style: style];
 }
 
 - (JCNotificationBannerView*) makeViewForNotification:(JCNotificationBanner *)banner {

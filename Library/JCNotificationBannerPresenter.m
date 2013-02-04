@@ -35,15 +35,6 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
   return sharedPresenter;
 }
 
-+ (void) enqueueNotificationWithTitle:(NSString*)title
-                              message:(NSString*)message
-                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
-  [[JCNotificationBannerPresenter sharedPresenter] enqueueNotificationWithTitle:title
-                                                                        message:message
-                                                                     tapHandler:tapHandler];
-}
-
-
 - (JCNotificationBannerPresenter*) init {
   self = [super init];
   if (self) {

@@ -21,11 +21,6 @@
 @property (strong) id <JCNotificationBannerPresenterDelegate> delegate;
 
 + (JCNotificationBannerPresenter*) sharedPresenter;
-+ (void) enqueueNotificationWithTitle:(NSString*)title
-                              message:(NSString*)message
-                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler;
-
-
 
 - (void) enqueueNotificationWithTitle:(NSString*)title
                               message:(NSString*)message

@@ -19,7 +19,7 @@
     style = kJCNotificationBannerPresenterStyleIOSBanner;
   }
 
-  [[JCNotificationBannerPresenter sharedPresenter] enqueueNotificationWithTitle:self.titleTextField.text
+  [JCNotificationBannerPresenter enqueueNotificationWithTitle:self.titleTextField.text
                                                       message:self.messageTextView.text
                                                    tapHandler:^{
                                                      UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Tapped notification"

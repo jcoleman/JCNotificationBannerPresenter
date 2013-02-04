@@ -13,6 +13,10 @@
 - (JCNotificationBanner*) dequeueNotification;
 - (void) beginPresentingNotifications;
 - (void) presentNotification:(JCNotificationBanner*)notification;
+- (void) enqueueNotificationWithTitle:(NSString*)title
+                              message:(NSString*)message
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler
+                                style:(JCNotificationBannerStyle) style;
 
 @end
 
@@ -44,6 +48,28 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
     notificationQueueMutex = [NSObject new];
   }
   return self;
+}
+
+/** Adds notification with iOS banner Style to queue with given parameters. */
++ (void) enqueueNotificationWithTitle:(NSString*)title
+                              message:(NSString*)message
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
+  [[self sharedPresenter] enqueueNotificationWithTitle: title
+                                               message: message
+                                            tapHandler: tapHandler
+                                                 style: kJCNotificationBannerPresenterStyleIOSBanner];
+}
+
+/** Adds notification to queue with given parameters. */
++ (void) enqueueNotificationWithTitle:(NSString*)title
+                              message:(NSString*)message
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler
+                                style:(JCNotificationBannerStyle)style
+{
+  [[self sharedPresenter] enqueueNotificationWithTitle: title
+                                               message: message
+                                            tapHandler: tapHandler
+                                                 style: style ];
 }
 
 - (void) enqueueNotificationWithTitle:(NSString*)title

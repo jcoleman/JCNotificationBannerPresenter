@@ -17,13 +17,6 @@
   return self;
 }
 
-- (void) layoutSubviews {
-  [super layoutSubviews];
-  CGRect messageFrame = self.messageLabel.frame;
-  messageFrame.origin.y = 7;
-  self.messageLabel.frame = messageFrame;
-}
-
 /** Overriden to do no custom drawing */
 - (void) drawRect:(CGRect)rect {
 }

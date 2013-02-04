@@ -1,4 +1,5 @@
 #import "JCNotificationBannerPresenter.h"
+#import "JCNotificationBannerViewIOSStyle.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface JCNotificationBannerPresenter () {
@@ -191,27 +192,14 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
 }
 
 - (void) presentNotificationIOSStyle:(JCNotificationBanner*)notification {
-  BOOL shouldCoverStatusBar = YES;
-  if ([_delegate respondsToSelector:@selector(shouldCoverStatusBar)]) {
-      shouldCoverStatusBar = [[self delegate] shouldCoverStatusBar];
-  }
-
   overlayWindow = [[JCNotificationBannerWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   overlayWindow.userInteractionEnabled = YES;
   overlayWindow.autoresizesSubviews = YES;
   overlayWindow.opaque = NO;
   overlayWindow.hidden = NO;
-  if (shouldCoverStatusBar) {
-    overlayWindow.windowLevel = UIWindowLevelStatusBar;
-  }
 
-  JCNotificationBannerView* banner;
-  if ([self.delegate respondsToSelector:@selector(makeViewForNotification:)]) {
-    banner = [[self delegate] makeViewForNotification:notification];
-  } else {
-    banner = [[JCNotificationBannerView alloc] initWithNotification: notification];
-  }
+  JCNotificationBannerView* banner = [[JCNotificationBannerViewIOSStyle alloc] initWithNotification:notification];
   banner.userInteractionEnabled = YES;
 
   bannerViewController = [JCNotificationBannerViewController new];
@@ -240,9 +228,8 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
   CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
   CGFloat width = 320.0;
   CGFloat height = 60.0;
-  CGFloat statusBarHeight = (MIN(statusBarSize.width, statusBarSize.height));
   CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) - width) / 2.0;
-  CGFloat y = -60.0 - ((shouldCoverStatusBar )? statusBarHeight : 0.0);
+  CGFloat y = -60.0;
   banner.frame = CGRectMake(x, y, width, height);
 
   JCNotificationBannerTapHandlingBlock originalTapHandler = notification.tapHandler;
@@ -263,27 +250,12 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
   };
   notification.tapHandler = wrappingTapHandler;
 
-  double startOpacity;
-  if ([self.delegate respondsToSelector:@selector(getStartOpacity)]) {
-    startOpacity = [self.delegate getStartOpacity];
-  } else {
-    startOpacity = 0;
-  }
-  double endOpacity;
-  if ([self.delegate respondsToSelector:@selector(getEndOpacity)]) {
-    endOpacity = [self.delegate getEndOpacity];
-  } else {
-    endOpacity = 0.9;
-  }
-  double animationDuration;
-  if ([self.delegate respondsToSelector:@selector(getAnimationDurationSeconds)]) {
-    animationDuration = [self.delegate getAnimationDurationSeconds];
-  } else {
-    animationDuration = 0.5;
-  }
+  double startOpacity = 1.0;
+  double endOpacity = 1.0;
+  double animationDuration = 0.5;
 
   CGRect bannerFrameAfterTransition = banner.frame;
-  bannerFrameAfterTransition.origin.y = 0 + ((!shouldCoverStatusBar )? statusBarHeight : 0);
+  bannerFrameAfterTransition.origin.y = MIN(statusBarSize.width, statusBarSize.height);
   UIImage *image = [self captureWindowPartWithRect: bannerFrameAfterTransition];
 
   // Prepare view transform
@@ -307,12 +279,7 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
   [containerView.layer addSublayer:imageLayer];
 
   // On timeout, slide it up while fading it out.
-  double delayInSeconds;
-  if ([self.delegate respondsToSelector:@selector(getDisplayDurationSeconds)]) {
-    delayInSeconds = [self.delegate getDisplayDurationSeconds];
-  } else {
-    delayInSeconds = 5.0;
-  }
+  double delayInSeconds = 5.0;
   dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
   dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
     // Add image of background to layer.

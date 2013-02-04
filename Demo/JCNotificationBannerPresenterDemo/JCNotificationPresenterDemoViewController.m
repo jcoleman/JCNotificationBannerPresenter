@@ -17,7 +17,6 @@
   JCNotificationBannerStyle style = kJCNotificationBannerPresenterStyleAndroidToast;
   if (self.customizationSwitch.on) {
     style = kJCNotificationBannerPresenterStyleIOSBanner;
-    [JCNotificationBannerPresenter sharedPresenter].delegate = self;
   }
 
   [[JCNotificationBannerPresenter sharedPresenter] enqueueNotificationWithTitle:self.titleTextField.text
@@ -31,23 +30,6 @@
                                                      [alert show];
                                                    }
                                                         style: style];
-}
-
-- (JCNotificationBannerView*) makeViewForNotification:(JCNotificationBanner *)banner {
-    JCNotificationBannerViewIOSStyle* view = [[JCNotificationBannerViewIOSStyle alloc] initWithNotification:banner];
-    return view;
-}
-
-- (BOOL) shouldCoverStatusBar {
-  return NO;
-}
-
-- (double) getStartOpacity {
-  return 1.0;
-}
-
-- (double) getEndOpacity {
-  return 1.0;
 }
 
 - (void) viewDidUnload {

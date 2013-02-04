@@ -6,7 +6,7 @@
 
 @property (weak, nonatomic) IBOutlet UITextField* titleTextField;
 @property (weak, nonatomic) IBOutlet UITextView* messageTextView;
-@property (weak, nonatomic) IBOutlet UISwitch* customizationSwitch;
+@property (weak, nonatomic) IBOutlet UISegmentedControl* styleSwitch;
 
 
 @end
@@ -15,7 +15,7 @@
 
 - (IBAction) presentNotificationButtonTapped:(id)sender {
   JCNotificationBannerStyle style = kJCNotificationBannerPresenterStyleAndroidToast;
-  if (self.customizationSwitch.on) {
+  if (self.styleSwitch.selectedSegmentIndex) {
     style = kJCNotificationBannerPresenterStyleIOSBanner;
   }
 

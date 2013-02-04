@@ -24,4 +24,8 @@
   self.messageLabel.frame = messageFrame;
 }
 
+/** Overriden to do no custom drawing */
+- (void) drawRect:(CGRect)rect {
+}
+
 @end

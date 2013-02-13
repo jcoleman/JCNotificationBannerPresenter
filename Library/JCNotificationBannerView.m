@@ -1,14 +1,15 @@
 #import "JCNotificationBannerView.h"
 
-const CGFloat kJCNotificationBannerViewOutlineWidth = 2;
-const CGFloat kJCNotificationBannerViewMargin = 5;
+const CGFloat kJCNotificationBannerViewOutlineWidth = 2.0;
+const CGFloat kJCNotificationBannerViewMarginX = 15.0;
+const CGFloat kJCNotificationBannerViewMarginY = 5.0;
 
 @interface JCNotificationBannerView () {
   BOOL isPresented;
   NSObject* isPresentedMutex;
 }
 
-- (void) handleSingleTap:(UIGestureRecognizer *)gestureRecognizer;
+- (void) handleSingleTap:(UIGestureRecognizer*)gestureRecognizer;
 
 @end
 
@@ -36,6 +37,7 @@ const CGFloat kJCNotificationBannerViewMargin = 5;
     self.messageLabel.font = [UIFont systemFontOfSize:14];
     self.messageLabel.textColor = [UIColor lightTextColor];
     self.messageLabel.backgroundColor = [UIColor clearColor];
+    self.messageLabel.numberOfLines = 0;
     [self addSubview:self.messageLabel];
 
     UITapGestureRecognizer* tapRecognizer;
@@ -84,19 +86,22 @@ const CGFloat kJCNotificationBannerViewMargin = 5;
 
 - (void) layoutSubviews {
   if (!(self.frame.size.width > 0)) { return; }
+    
+  BOOL hasTitle = notificationBanner ? (notificationBanner.title.length > 0) : NO;
 
-  CGFloat totalBorder = kJCNotificationBannerViewOutlineWidth + kJCNotificationBannerViewMargin;
-  CGFloat currentX = kJCNotificationBannerViewOutlineWidth + kJCNotificationBannerViewMargin;
-  CGFloat y = kJCNotificationBannerViewOutlineWidth + kJCNotificationBannerViewMargin;
-  CGFloat contentHeight = self.frame.size.height - (totalBorder * 2);
-  CGFloat contentWidth = self.frame.size.width - (totalBorder * 2);
+  CGFloat borderY = kJCNotificationBannerViewOutlineWidth + kJCNotificationBannerViewMarginY;
+  CGFloat borderX = kJCNotificationBannerViewOutlineWidth + kJCNotificationBannerViewMarginX;
+  CGFloat currentX = borderX;
+  CGFloat currentY = borderY;
+  CGFloat contentWidth = self.frame.size.width - (borderX * 2.0);
 
-  self.iconImageView.frame = CGRectMake(currentX, y, contentHeight, contentHeight);
-  currentX += contentHeight + kJCNotificationBannerViewMargin;
-
-  CGFloat textWidth = contentWidth - contentHeight - kJCNotificationBannerViewMargin;
-  self.titleLabel.frame = CGRectMake(currentX, y + 2, textWidth, 22);
-  self.messageLabel.frame = CGRectMake(currentX, y + 24, textWidth, 18);
+  currentY += 2.0;
+  if (hasTitle) {
+    self.titleLabel.frame = CGRectMake(currentX, currentY, contentWidth, 22.0);
+    currentY += 22.0;
+  }
+  self.messageLabel.frame = CGRectMake(currentX, currentY, contentWidth, (self.frame.size.height - borderY) - currentY);
+  [self.messageLabel sizeToFit];
 }
 
 - (void) setNotificationBanner:(JCNotificationBanner*)notification {

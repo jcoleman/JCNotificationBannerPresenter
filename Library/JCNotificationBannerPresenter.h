@@ -4,32 +4,18 @@
 #import "JCNotificationBannerWindow.h"
 #import "JCNotificationBannerViewController.h"
 
-@protocol JCNotificationBannerPresenterDelegate <NSObject>
-@optional
-
-- (JCNotificationBannerView*) makeViewForNotification:(JCNotificationBanner*)banner;
-- (BOOL) shouldCoverStatusBar;
-- (double) getDisplayDurationSeconds;
-- (double) getAnimationDurationSeconds;
-- (double) getStartOpacity;
-- (double) getEndOpacity;
-
-@end
-
 @interface JCNotificationBannerPresenter : NSObject
 
-@property (strong) id <JCNotificationBannerPresenterDelegate> delegate;
-
-+ (JCNotificationBannerPresenter*) sharedPresenter;
+/** Adds notification with iOS banner Style to queue with given parameters. */
 + (void) enqueueNotificationWithTitle:(NSString*)title
                               message:(NSString*)message
                            tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler;
 
-
-
-- (void) enqueueNotificationWithTitle:(NSString*)title
+/** Adds notification to queue with given parameters. */
++ (void) enqueueNotificationWithTitle:(NSString*)title
                               message:(NSString*)message
-                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler;
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler
+                                style:(JCNotificationBannerStyle)style;
 
 
 @end

@@ -8,12 +8,14 @@
 
 - (JCNotificationBanner*) initWithTitle:(NSString*)_title
                                 message:(NSString*)_message
-                             tapHandler:(JCNotificationBannerTapHandlingBlock)_tapHandler {
+                             tapHandler:(JCNotificationBannerTapHandlingBlock)_tapHandler
+                                  style:(JCNotificationBannerStyle)style {
   self = [super init];
   if (self) {
     self.title = _title;
     self.message = _message;
     self.tapHandler = _tapHandler;
+    self.style = style;
   }
   return self;
 }

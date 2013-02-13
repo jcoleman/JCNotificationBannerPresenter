@@ -1,12 +1,12 @@
 #import "JCNotificationPresenterDemoViewController.h"
 #import "JCNotificationBannerPresenter.h"
-#import "JCNotificationBannerCustomView.h"
+#import "JCNotificationBannerViewIOSStyle.h"
 
 @interface JCNotificationPresenterDemoViewController ()
 
 @property (weak, nonatomic) IBOutlet UITextField* titleTextField;
 @property (weak, nonatomic) IBOutlet UITextView* messageTextView;
-@property (weak, nonatomic) IBOutlet UISwitch* customizationSwitch;
+@property (weak, nonatomic) IBOutlet UISegmentedControl* styleSwitch;
 
 
 @end
@@ -14,10 +14,9 @@
 @implementation JCNotificationPresenterDemoViewController
 
 - (IBAction) presentNotificationButtonTapped:(id)sender {
-  if (self.customizationSwitch.on) {
-    [JCNotificationBannerPresenter sharedPresenter].delegate = self;
-  } else {
-    [JCNotificationBannerPresenter sharedPresenter].delegate = nil;
+  JCNotificationBannerStyle style = kJCNotificationBannerPresenterStyleAndroidToast;
+  if (self.styleSwitch.selectedSegmentIndex) {
+    style = kJCNotificationBannerPresenterStyleIOSBanner;
   }
 
   [JCNotificationBannerPresenter enqueueNotificationWithTitle:self.titleTextField.text
@@ -29,24 +28,8 @@
                                                                                            cancelButtonTitle:@"OK"
                                                                                            otherButtonTitles:nil];
                                                      [alert show];
-                                                   }];
-}
-
-- (JCNotificationBannerView*) makeViewForNotification:(JCNotificationBanner *)banner {
-    JCNotificationBannerCustomView* view = [[JCNotificationBannerCustomView alloc] initWithNotification:banner];
-    return view;
-}
-
-- (BOOL) shouldCoverStatusBar {
-  return NO;
-}
-
-- (double) getStartOpacity {
-  return 1.0;
-}
-
-- (double) getEndOpacity {
-  return 1.0;
+                                                   }
+                                                        style: style];
 }
 
 - (void) viewDidUnload {

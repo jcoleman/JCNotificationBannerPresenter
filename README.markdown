@@ -23,7 +23,7 @@ Usage?
                                                           message:alert
                                                        tapHandler:^{
                                                          NSLog(@"Received tap on notification banner!");
-                                                       }];]
+                                                       }];
     }
 
 Installation?

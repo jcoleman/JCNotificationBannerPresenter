@@ -15,8 +15,8 @@
 - (void) presentNotification:(JCNotificationBanner*)notification;
 - (void) enqueueNotificationWithTitle:(NSString*)title
                               message:(NSString*)message
-                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler
-                                style:(JCNotificationBannerStyle) style;
+                                style:(JCNotificationBannerStyle)style
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler;
 
 @end
 
@@ -56,30 +56,29 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
                            tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
   [[self sharedPresenter] enqueueNotificationWithTitle:title
                                                message:message
-                                            tapHandler:tapHandler
-                                                 style:kJCNotificationBannerPresenterStyleIOSBanner];
+                                                 style:kJCNotificationBannerPresenterStyleIOSBanner
+                                            tapHandler:tapHandler];
 }
 
 /** Adds notification to queue with given parameters. */
 + (void) enqueueNotificationWithTitle:(NSString*)title
                               message:(NSString*)message
-                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler
                                 style:(JCNotificationBannerStyle)style
-{
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
   [[self sharedPresenter] enqueueNotificationWithTitle:title
                                                message:message
-                                            tapHandler:tapHandler
-                                                 style:style ];
+                                                 style:style
+                                            tapHandler:tapHandler];
 }
 
 - (void) enqueueNotificationWithTitle:(NSString*)title
                        message:(NSString*)message
-                    tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler
-                         style:(JCNotificationBannerStyle) style {
+                                style:(JCNotificationBannerStyle)style
+                    tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
   JCNotificationBanner* notification = [[JCNotificationBanner alloc] initWithTitle:title
                                                                            message:message
-                                                                        tapHandler:tapHandler
-                                                                             style:style];
+                                                                             style:style
+                                                                        tapHandler:tapHandler];
   @synchronized(notificationQueueMutex) {
     [enqueuedNotifications addObject:notification];
   }

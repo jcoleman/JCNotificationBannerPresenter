@@ -21,6 +21,7 @@
 
   [JCNotificationBannerPresenter enqueueNotificationWithTitle:self.titleTextField.text
                                                       message:self.messageTextView.text
+                                                        style:style
                                                    tapHandler:^{
                                                      UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Tapped notification"
                                                                                                      message:@"Perform some custom action on notification tap event..."
@@ -28,8 +29,7 @@
                                                                                            cancelButtonTitle:@"OK"
                                                                                            otherButtonTitles:nil];
                                                      [alert show];
-                                                   }
-                                                        style:style];
+                                                   }];
 }
 
 - (void) viewDidUnload {

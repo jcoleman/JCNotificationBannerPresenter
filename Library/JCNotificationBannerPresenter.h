@@ -1,8 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "JCNotificationBannerView.h"
 #import "JCNotificationBanner.h"
-#import "JCNotificationBannerWindow.h"
-#import "JCNotificationBannerViewController.h"
 
 @interface JCNotificationBannerPresenter : NSObject
 

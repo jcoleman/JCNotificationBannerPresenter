@@ -1,5 +1,8 @@
 #import "JCNotificationBannerPresenter.h"
 #import "JCNotificationBannerViewIOSStyle.h"
+#import "JCNotificationBannerView.h"
+#import "JCNotificationBannerWindow.h"
+#import "JCNotificationBannerViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface JCNotificationBannerPresenter () {

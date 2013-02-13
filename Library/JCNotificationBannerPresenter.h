@@ -6,13 +6,15 @@
 
 @interface JCNotificationBannerPresenter : NSObject
 
-+ (JCNotificationBannerPresenter*) sharedPresenter;
+/** Adds notification with iOS banner Style to queue with given parameters. */
 + (void) enqueueNotificationWithTitle:(NSString*)title
                               message:(NSString*)message
                            tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler;
 
-- (void) enqueueNotificationWithTitle:(NSString*)title
+/** Adds notification to queue with given parameters. */
++ (void) enqueueNotificationWithTitle:(NSString*)title
                               message:(NSString*)message
+                                style:(JCNotificationBannerStyle)style
                            tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler;
 
 @end

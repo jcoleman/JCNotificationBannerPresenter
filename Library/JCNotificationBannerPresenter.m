@@ -54,10 +54,10 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
 + (void) enqueueNotificationWithTitle:(NSString*)title
                               message:(NSString*)message
                            tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
-  [[self sharedPresenter] enqueueNotificationWithTitle: title
-                                               message: message
-                                            tapHandler: tapHandler
-                                                 style: kJCNotificationBannerPresenterStyleIOSBanner];
+  [[self sharedPresenter] enqueueNotificationWithTitle:title
+                                               message:message
+                                            tapHandler:tapHandler
+                                                 style:kJCNotificationBannerPresenterStyleIOSBanner];
 }
 
 /** Adds notification to queue with given parameters. */
@@ -66,10 +66,10 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
                            tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler
                                 style:(JCNotificationBannerStyle)style
 {
-  [[self sharedPresenter] enqueueNotificationWithTitle: title
-                                               message: message
-                                            tapHandler: tapHandler
-                                                 style: style ];
+  [[self sharedPresenter] enqueueNotificationWithTitle:title
+                                               message:message
+                                            tapHandler:tapHandler
+                                                 style:style ];
 }
 
 - (void) enqueueNotificationWithTitle:(NSString*)title
@@ -116,10 +116,10 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
 {
   switch (notification.style) {
     case kJCNotificationBannerPresenterStyleAndroidToast:
-      [self presentNotificationAndroidStyle: notification];
+      [self presentNotificationAndroidStyle:notification];
       break;
     case kJCNotificationBannerPresenterStyleIOSBanner:
-      [self presentNotificationIOSStyle: notification];
+      [self presentNotificationIOSStyle:notification];
     default:
       break;
   }
@@ -282,12 +282,12 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
 
   CGRect bannerFrameAfterTransition = banner.frame;
   bannerFrameAfterTransition.origin.y = MIN(statusBarSize.width, statusBarSize.height);
-  UIImage *image = [self captureWindowPartWithRect: bannerFrameAfterTransition];
+  UIImage* image = [self captureWindowPartWithRect:bannerFrameAfterTransition];
 
   // Prepare view transform
   CALayer* layer = banner.layer;
   banner.alpha = startOpacity;
-  banner.frame = CGRectOffset(banner.frame, 0, banner.frame.size.height);
+  banner.frame = CGRectOffset(banner.frame, 0.0, banner.frame.size.height);
   banner.alpha = endOpacity;
   layer.anchorPointZ = 0.5f * banner.frame.size.height;
   [self rotateLayer:layer fromAngle:-90.0 toAngle:0.0 duration:animationDuration onCompleted:^(){}];
@@ -297,11 +297,11 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
   imageLayer.frame = banner.frame;
   imageLayer.anchorPointZ = 0.5f * banner.frame.size.height;
   imageLayer.contents = (id)image.CGImage;
-  imageLayer.shadowOffset = CGSizeMake(0, 1);
+  imageLayer.shadowOffset = CGSizeMake(0.0, 1.0);
   imageLayer.shadowColor = [UIColor darkGrayColor].CGColor;
   imageLayer.shadowRadius = 3.0;
   imageLayer.shadowOpacity = 0.8;
-  [self rotateLayer:imageLayer fromAngle: 0 toAngle: 90 duration: animationDuration onCompleted: ^(){} ];
+  [self rotateLayer:imageLayer fromAngle:0.0 toAngle:90.0 duration:animationDuration onCompleted:^(){} ];
   [containerView.layer addSublayer:imageLayer];
 
   // On timeout, slide it up while fading it out.
@@ -317,11 +317,11 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
     imageLayer.shadowColor = [UIColor darkGrayColor].CGColor;
     imageLayer.shadowRadius = 3.0;
     imageLayer.shadowOpacity = 0.8;
-    [self rotateLayer:imageLayer fromAngle: -90 toAngle: 0 duration: animationDuration onCompleted: ^(){} ];
+    [self rotateLayer:imageLayer fromAngle:-90.0 toAngle:0.0 duration:animationDuration onCompleted:^(){} ];
     [[containerView layer] addSublayer:imageLayer];
 
     CALayer* layer = [banner layer];
-    [self rotateLayer:layer fromAngle: 0 toAngle:90 duration: animationDuration onCompleted:^(){
+    [self rotateLayer:layer fromAngle:0.0 toAngle:90.0 duration:animationDuration onCompleted:^(){
       if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
         [banner removeFromSuperview];
         [overlayWindow removeFromSuperview];
@@ -358,7 +358,7 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
   [imageLayer addAnimation:animation forKey:@"transform.rotation.x"];
 }
 
-- (void)animationDidStop:(CAAnimation*)animation finished:(BOOL)finished {
+- (void) animationDidStop:(CAAnimation*)animation finished:(BOOL)finished {
   if (finished) {
     void(^onCompletedBlock)() = [animation valueForKey:@"onCompleted"];
     if (onCompletedBlock)
@@ -376,7 +376,7 @@ CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
 
   CGRect firstCaptureRect = keyWindow.bounds;
 
-  UIGraphicsBeginImageContextWithOptions(firstCaptureRect.size,YES,0.0f);
+  UIGraphicsBeginImageContextWithOptions(firstCaptureRect.size, YES, 0.0);
   CGContextRef context = UIGraphicsGetCurrentContext();
   [keyWindow.layer renderInContext:context];
   UIImage* capturedImage = UIGraphicsGetImageFromCurrentImageContext();

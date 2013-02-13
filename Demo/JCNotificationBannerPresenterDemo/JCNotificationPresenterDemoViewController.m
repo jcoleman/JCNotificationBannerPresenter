@@ -29,7 +29,7 @@
                                                                                            otherButtonTitles:nil];
                                                      [alert show];
                                                    }
-                                                        style: style];
+                                                        style:style];
 }
 
 - (void) viewDidUnload {

@@ -18,6 +18,6 @@ typedef void (^JCNotificationBannerTapHandlingBlock)();
 - (JCNotificationBanner*) initWithTitle:(NSString*)title
                                 message:(NSString*)message
                              tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler
-                                  style:(JCNotificationBannerStyle) style;
+                                  style:(JCNotificationBannerStyle)style;
 
 @end

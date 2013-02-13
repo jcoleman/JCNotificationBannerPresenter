@@ -17,5 +17,4 @@
                            tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler
                                 style:(JCNotificationBannerStyle)style;
 
-
 @end

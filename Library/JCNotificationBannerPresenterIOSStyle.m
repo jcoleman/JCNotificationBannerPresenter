@@ -8,13 +8,13 @@
 @implementation JCNotificationBannerPresenterIOSStyle
 
 - (void) presentNotification:(JCNotificationBanner *)notification
-                   finished:(JCNotificationBannerPresenterFinishedBlock)finished {
-  JCNotificationBannerWindow* overlayWindow = [self newWindowForNotification:notification];
+                    inWindow:(JCNotificationBannerWindow*)window
+                    finished:(JCNotificationBannerPresenterFinishedBlock)finished {
   JCNotificationBannerView* banner = [self newBannerViewForNotification:notification];
 
   JCNotificationBannerViewController* bannerViewController = [JCNotificationBannerViewController new];
-  overlayWindow.rootViewController = bannerViewController;
-  overlayWindow.bannerView = banner;
+  window.rootViewController = bannerViewController;
+  window.bannerView = banner;
 
   UIView* containerView = [self newContainerViewForNotification:notification];
   [containerView addSubview:banner];
@@ -40,10 +40,10 @@
       }
 
       [banner removeFromSuperview];
-      overlayWindow.rootViewController = nil;
-      [overlayWindow removeFromSuperview];
       finished();
     }
+    // Break the retain cycle
+    notification.tapHandler = nil;
   };
   notification.tapHandler = wrappingTapHandler;
 
@@ -95,10 +95,10 @@
     [self rotateLayer:layer fromAngle:0.0 toAngle:90.0 duration:animationDuration onCompleted:^(){
       if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
         [banner removeFromSuperview];
-        overlayWindow.rootViewController = nil;
-        [overlayWindow removeFromSuperview];
         finished();
       }
+      // Break the retain cycle
+      notification.tapHandler = nil;
     }];
   });
 }
@@ -239,7 +239,6 @@ CGFloat RadiansToDegrees(CGFloat radians) { return radians * 180.0 / M_PI; };
   animation.toValue = @(toInRadians);
   animation.fillMode = kCAFillModeForwards;
   animation.removedOnCompletion = NO;
-  [animation setValue:imageLayer forKey:@"layer"];
   [animation setValue:[onCompletedBlock copy] forKey:@"onCompleted"];
   [imageLayer addAnimation:animation forKey:@"transform.rotation.x"];
 }
@@ -250,6 +249,7 @@ CGFloat RadiansToDegrees(CGFloat radians) { return radians * 180.0 / M_PI; };
     if (onCompletedBlock)
       onCompletedBlock();
   }
+  [animation setValue:nil forKey:@"onCompleted"];
 }
 
 @end

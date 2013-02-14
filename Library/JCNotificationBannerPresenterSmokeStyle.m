@@ -14,18 +14,17 @@
   return self;
 }
 
-- (void) presentNotification:(JCNotificationBanner *)notification
+- (void) presentNotification:(JCNotificationBanner*)notification
+                    inWindow:(JCNotificationBannerWindow*)window
                     finished:(JCNotificationBannerPresenterFinishedBlock)finished {
-  JCNotificationBannerWindow* overlayWindow = [self newWindowForNotification:notification];
-
   JCNotificationBannerView* banner = [self newBannerViewForNotification:notification];
 
   JCNotificationBannerViewController* bannerViewController = [JCNotificationBannerViewController new];
-  overlayWindow.rootViewController = bannerViewController;
+  window.rootViewController = bannerViewController;
 
   UIView* containerView = [self newContainerViewForNotification:notification];
 
-  overlayWindow.bannerView = banner;
+  window.bannerView = banner;
 
   [containerView addSubview:banner];
   bannerViewController.view = containerView;
@@ -53,9 +52,9 @@
       }
 
       [banner removeFromSuperview];
-      overlayWindow.rootViewController = nil;
-      [overlayWindow removeFromSuperview];
       finished();
+      // Break the retain cycle
+      notification.tapHandler = nil;
     }
   };
   banner.notificationBanner.tapHandler = wrappingTapHandler;
@@ -84,10 +83,9 @@
                      } completion:^(BOOL didFinish) {
                        if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
                          [banner removeFromSuperview];
-                         overlayWindow.rootViewController = nil;
-                         [overlayWindow removeFromSuperview];
-
                          finished();
+                         // Break the retain cycle
+                         notification.tapHandler = nil;
                        }
                      }];
   });
@@ -95,8 +93,8 @@
 
 #pragma mark - View helpers
 
-- (JCNotificationBannerWindow*) newWindowForNotification:(JCNotificationBanner*)notification {
-  JCNotificationBannerWindow* window = [super newWindowForNotification:notification];
+- (JCNotificationBannerWindow*) newWindow {
+  JCNotificationBannerWindow* window = [super newWindow];
   window.windowLevel = UIWindowLevelStatusBar;
   return window;
 }

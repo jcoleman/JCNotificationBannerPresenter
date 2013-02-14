@@ -31,6 +31,7 @@
     }
 
     if (nextWindow) {
+      NSAssert(![nextWindow isKindOfClass:[JCNotificationBannerWindow class]], @"Did not expect multiple notification windows.");
       return [nextWindow hitTest:point withEvent:event];
     } else {
       return superHitView;

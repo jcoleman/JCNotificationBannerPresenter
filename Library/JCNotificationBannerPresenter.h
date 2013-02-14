@@ -3,8 +3,13 @@
 
 typedef void (^JCNotificationBannerPresenterFinishedBlock)();
 
+@class JCNotificationBannerWindow;
+
 @interface JCNotificationBannerPresenter : NSObject
 
-- (void) presentNotification:(JCNotificationBanner*)notification finished:(JCNotificationBannerPresenterFinishedBlock)finished;
+- (void)willBeginPresentingNotifications;
+- (void)didFinishPresentingNotifications;
+- (void) presentNotification:(JCNotificationBanner*)notification
+                    finished:(JCNotificationBannerPresenterFinishedBlock)finished;
 
 @end

@@ -1,12 +1,16 @@
 #import "JCNotificationCenter.h"
 #import "JCNotificationBannerPresenter.h"
 #import "JCNotificationBannerPresenterIOSStyle.h"
+#import "JCNotificationBannerWindow.h"
+#import "JCNotificationBannerPresenter_Private.h"
 
 @interface JCNotificationCenter () {
 @private
   NSMutableArray* enqueuedNotifications;
   NSLock* isPresentingMutex;
   NSObject* notificationQueueMutex;
+  JCNotificationBannerPresenter* _currentPresenter;
+  JCNotificationBannerPresenter* _nextPresenter;
 }
 @end
 
@@ -68,10 +72,27 @@
 - (void) beginPresentingNotifications {
   dispatch_async(dispatch_get_main_queue(), ^{
     if ([isPresentingMutex tryLock]) {
+      // Check to see if the nextPresenter has changed *during* a group
+      // of notifications.
+      if (_currentPresenter != _nextPresenter) {
+        // Finish up with the original one.
+        [_currentPresenter didFinishPresentingNotifications];
+        _currentPresenter = nil;
+      }
+
+      if (!_currentPresenter) {
+        _currentPresenter = _nextPresenter;
+        [_currentPresenter willBeginPresentingNotifications];
+      }
       JCNotificationBanner* nextNotification = [self dequeueNotification];
       if (nextNotification) {
-        [self presentNotification:nextNotification];
+        [_currentPresenter presentNotification:nextNotification
+                                      finished:^{
+                                        [self donePresentingNotification:nextNotification];
+                                      }];
       } else {
+        [_currentPresenter didFinishPresentingNotifications];
+        _currentPresenter = nil;
         [isPresentingMutex unlock];
       }
     } else {
@@ -80,17 +101,18 @@
   });
 }
 
-- (void) presentNotification:(JCNotificationBanner*)notification {
-  [self.presenter presentNotification:notification finished:^{
-    [self donePresentingNotification:notification];
-  }];
-}
-
 - (void) donePresentingNotification:(JCNotificationBanner*)notification {
   // Process any notifications enqueued during this one's presentation.
   [isPresentingMutex unlock];
   [self beginPresentingNotifications];
 }
 
+- (void) setPresenter:(JCNotificationBannerPresenter*)presenter {
+  _nextPresenter = presenter;
+}
+
+- (JCNotificationBannerPresenter*) presenter {
+  return _nextPresenter;
+}
 
 @end

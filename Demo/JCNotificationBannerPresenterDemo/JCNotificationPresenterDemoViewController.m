@@ -1,6 +1,7 @@
 #import "JCNotificationPresenterDemoViewController.h"
-#import "JCNotificationBannerPresenter.h"
-#import "JCNotificationBannerViewIOSStyle.h"
+#import "JCNotificationCenter.h"
+#import "JCNotificationBannerPresenterSmokeStyle.h"
+#import "JCNotificationBannerPresenterIOSStyle.h"
 
 @interface JCNotificationPresenterDemoViewController ()
 
@@ -8,28 +9,29 @@
 @property (weak, nonatomic) IBOutlet UITextView* messageTextView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl* styleSwitch;
 
-
 @end
 
 @implementation JCNotificationPresenterDemoViewController
 
 - (IBAction) presentNotificationButtonTapped:(id)sender {
-  JCNotificationBannerStyle style = kJCNotificationBannerPresenterStyleAndroidToast;
   if (self.styleSwitch.selectedSegmentIndex) {
-    style = kJCNotificationBannerPresenterStyleIOSBanner;
+    [JCNotificationCenter sharedCenter].presenter = [JCNotificationBannerPresenterIOSStyle new];
+  } else {
+    [JCNotificationCenter sharedCenter].presenter = [JCNotificationBannerPresenterSmokeStyle new];
   }
 
-  [JCNotificationBannerPresenter enqueueNotificationWithTitle:self.titleTextField.text
-                                                      message:self.messageTextView.text
-                                                        style:style
-                                                   tapHandler:^{
-                                                     UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Tapped notification"
-                                                                                                     message:@"Perform some custom action on notification tap event..."
-                                                                                                    delegate:nil
-                                                                                           cancelButtonTitle:@"OK"
-                                                                                           otherButtonTitles:nil];
-                                                     [alert show];
-                                                   }];
+  [JCNotificationCenter
+   enqueueNotificationWithTitle:self.titleTextField.text
+   message:self.messageTextView.text
+   tapHandler:^{
+     UIAlertView* alert = [[UIAlertView alloc]
+                           initWithTitle:@"Tapped notification"
+                           message:@"Perform some custom action on notification tap event..."
+                           delegate:nil
+                           cancelButtonTitle:@"OK"
+                           otherButtonTitles:nil];
+     [alert show];
+   }];
 }
 
 - (void) viewDidUnload {

@@ -42,6 +42,8 @@
       [banner removeFromSuperview];
       finished();
     }
+    // Break the retain cycle
+    notification.tapHandler = nil;
   };
   notification.tapHandler = wrappingTapHandler;
 
@@ -95,6 +97,8 @@
         [banner removeFromSuperview];
         finished();
       }
+      // Break the retain cycle
+      notification.tapHandler = nil;
     }];
   });
 }
@@ -235,7 +239,6 @@ CGFloat RadiansToDegrees(CGFloat radians) { return radians * 180.0 / M_PI; };
   animation.toValue = @(toInRadians);
   animation.fillMode = kCAFillModeForwards;
   animation.removedOnCompletion = NO;
-  [animation setValue:imageLayer forKey:@"layer"];
   [animation setValue:[onCompletedBlock copy] forKey:@"onCompleted"];
   [imageLayer addAnimation:animation forKey:@"transform.rotation.x"];
 }
@@ -246,6 +249,7 @@ CGFloat RadiansToDegrees(CGFloat radians) { return radians * 180.0 / M_PI; };
     if (onCompletedBlock)
       onCompletedBlock();
   }
+  [animation setValue:nil forKey:@"onCompleted"];
 }
 
 @end

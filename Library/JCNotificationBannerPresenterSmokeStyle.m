@@ -53,6 +53,8 @@
 
       [banner removeFromSuperview];
       finished();
+      // Break the retain cycle
+      notification.tapHandler = nil;
     }
   };
   banner.notificationBanner.tapHandler = wrappingTapHandler;
@@ -82,6 +84,8 @@
                        if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
                          [banner removeFromSuperview];
                          finished();
+                         // Break the retain cycle
+                         notification.tapHandler = nil;
                        }
                      }];
   });

@@ -19,11 +19,12 @@ Usage?
       NSString* title = @"Push Notification";
       NSDictionary* aps = [notification objectForKey:@"aps"];
       NSString* alert = [aps objectForKey:@"alert"];
-      [JCNotificationBannerPresenter enqueueNotificationWithTitle:title
-                                                          message:alert
-                                                       tapHandler:^{
-                                                         NSLog(@"Received tap on notification banner!");
-                                                       }];
+      [JCNotificationCenter
+       enqueueNotificationWithTitle:title
+       message:alert
+       tapHandler:^{
+         NSLog(@"Received tap on notification banner!");
+       }];
     }
 
 Installation?

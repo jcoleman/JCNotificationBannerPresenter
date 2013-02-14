@@ -1,6 +1,6 @@
 #import "JCNotificationPresenterDemoViewController.h"
 #import "JCNotificationCenter.h"
-#import "JCNotificationBannerPresenterAndroidStyle.h"
+#import "JCNotificationBannerPresenterSmokeStyle.h"
 #import "JCNotificationBannerPresenterIOSStyle.h"
 
 @interface JCNotificationPresenterDemoViewController ()
@@ -17,7 +17,7 @@
   if (self.styleSwitch.selectedSegmentIndex) {
     [JCNotificationCenter sharedCenter].presenter = [JCNotificationBannerPresenterIOSStyle new];
   } else {
-    [JCNotificationCenter sharedCenter].presenter = [JCNotificationBannerPresenterAndroidStyle new];
+    [JCNotificationCenter sharedCenter].presenter = [JCNotificationBannerPresenterSmokeStyle new];
   }
 
   [JCNotificationCenter

@@ -1,9 +1,9 @@
-#import "JCNotificationBannerPresenterAndroidStyle.h"
+#import "JCNotificationBannerPresenterSmokeStyle.h"
 #import "JCNotificationBannerPresenter_Private.h"
 #import "JCNotificationBannerView.h"
 #import "JCNotificationBannerViewController.h"
 
-@implementation JCNotificationBannerPresenterAndroidStyle
+@implementation JCNotificationBannerPresenterSmokeStyle
 
 - (id) init {
   if (self = [super init]) {

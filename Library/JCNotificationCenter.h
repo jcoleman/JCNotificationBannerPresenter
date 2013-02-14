@@ -5,7 +5,7 @@
 
 @interface JCNotificationCenter : NSObject
 
-@property JCNotificationBannerPresenter* presenter;
+@property (nonatomic) JCNotificationBannerPresenter* presenter;
 
 + (JCNotificationCenter*) sharedCenter;
 

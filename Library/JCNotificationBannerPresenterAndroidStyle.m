@@ -19,33 +19,19 @@
 }
 
 - (void) presentNotificationAndroidStyle:(JCNotificationBanner*)notification {
-  overlayWindow = [[JCNotificationBannerWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-  overlayWindow.userInteractionEnabled = YES;
-  overlayWindow.opaque = NO;
-  overlayWindow.hidden = NO;
-  overlayWindow.windowLevel = UIWindowLevelStatusBar;
+  JCNotificationBannerWindow* overlayWindow = [self newWindowForNotification:notification];
 
-  JCNotificationBannerView* banner = [[JCNotificationBannerView alloc] initWithNotification:notification];
-  banner.userInteractionEnabled = YES;
+  JCNotificationBannerView* banner = [self newBannerViewForNotification:notification];
 
-  bannerViewController = [JCNotificationBannerViewController new];
+  JCNotificationBannerViewController* bannerViewController = [JCNotificationBannerViewController new];
   overlayWindow.rootViewController = bannerViewController;
 
-  UIView* containerView = [UIView new];
-  containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-  containerView.userInteractionEnabled = YES;
-  containerView.opaque = NO;
+  UIView* containerView = [self newContainerViewForNotification:notification];
 
   overlayWindow.bannerView = banner;
 
   [containerView addSubview:banner];
   bannerViewController.view = containerView;
-
-
-  banner.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin
-  | UIViewAutoresizingFlexibleLeftMargin
-  | UIViewAutoresizingFlexibleRightMargin;
 
   UIView* view = ((UIView*)[[[[UIApplication sharedApplication] keyWindow] subviews] objectAtIndex:0]);
   containerView.bounds = view.bounds;
@@ -66,7 +52,6 @@
 
       [banner removeFromSuperview];
       [overlayWindow removeFromSuperview];
-      overlayWindow = nil;
 
       [self donePresentingNotification:notification];
     }
@@ -98,11 +83,19 @@
                        if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
                          [banner removeFromSuperview];
                          [overlayWindow removeFromSuperview];
-                         overlayWindow = nil;
 
                          [self donePresentingNotification:notification];
                        }
                      }];
   });
 }
+
+#pragma mark - View helpers
+
+- (JCNotificationBannerWindow*) newWindowForNotification:(JCNotificationBanner*)notification {
+  JCNotificationBannerWindow* window = [super newWindowForNotification:notification];
+  window.windowLevel = UIWindowLevelStatusBar;
+  return window;
+}
+
 @end

@@ -20,34 +20,27 @@
   [self presentNotificationIOSStyle:notification];
 }
 
+- (JCNotificationBannerView*) newBannerViewForNotification:(JCNotificationBanner*)notification {
+  JCNotificationBannerView* view = [[JCNotificationBannerViewIOSStyle alloc]
+                                    initWithNotification:notification];
+  view.userInteractionEnabled = YES;
+  view.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin
+                        | UIViewAutoresizingFlexibleLeftMargin
+                        | UIViewAutoresizingFlexibleRightMargin;
+  return view;
+}
+
 - (void) presentNotificationIOSStyle:(JCNotificationBanner*)notification {
-  overlayWindow = [[JCNotificationBannerWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-  overlayWindow.userInteractionEnabled = YES;
-  overlayWindow.autoresizesSubviews = YES;
-  overlayWindow.opaque = NO;
-  overlayWindow.hidden = NO;
+  JCNotificationBannerWindow* overlayWindow = [self newWindowForNotification:notification];
+  JCNotificationBannerView* banner = [self newBannerViewForNotification:notification];
 
-  JCNotificationBannerView* banner = [[JCNotificationBannerViewIOSStyle alloc] initWithNotification:notification];
-  banner.userInteractionEnabled = YES;
-
-  bannerViewController = [JCNotificationBannerViewController new];
+  JCNotificationBannerViewController* bannerViewController = [JCNotificationBannerViewController new];
   overlayWindow.rootViewController = bannerViewController;
-
-  UIView* containerView = [UIView new];
-  containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-  containerView.userInteractionEnabled = YES;
-  containerView.autoresizesSubviews = YES;
-  containerView.opaque = NO;
-
   overlayWindow.bannerView = banner;
 
+  UIView* containerView = [self newContainerViewForNotification:notification];
   [containerView addSubview:banner];
   bannerViewController.view = containerView;
-
-  banner.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin
-  | UIViewAutoresizingFlexibleLeftMargin
-  | UIViewAutoresizingFlexibleRightMargin;
 
   UIView* view = [[[[UIApplication sharedApplication] keyWindow] subviews] objectAtIndex:0];
   containerView.bounds = view.bounds;
@@ -70,7 +63,6 @@
 
       [banner removeFromSuperview];
       [overlayWindow removeFromSuperview];
-      overlayWindow = nil;
 
       [self donePresentingNotification:notification];
     }
@@ -126,12 +118,19 @@
       if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
         [banner removeFromSuperview];
         [overlayWindow removeFromSuperview];
-        overlayWindow = nil;
 
         [self donePresentingNotification:notification];
       }
     }];
   });
+}
+
+#pragma mark - View helpers
+
+- (UIView *) newContainerViewForNotification:(JCNotificationBanner *)notification {
+  UIView* view = [super newContainerViewForNotification:notification];
+  view.autoresizesSubviews = YES;
+  return view;
 }
 
 #pragma mark - Screenshot

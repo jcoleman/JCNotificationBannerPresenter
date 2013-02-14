@@ -9,9 +9,18 @@
   static JCNotificationBannerPresenter* sharedPresenter = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    sharedPresenter = [JCNotificationBannerPresenterAndroidStyle new];
+    sharedPresenter = [self.class new];
   });
   return sharedPresenter;
+}
+
+- (id) init {
+  if (self = [super init]) {
+    self.minimumHorizontalMargin = 10.0;
+    self.bannerMaxWidth = 350.0;
+    self.bannerHeight = 60.0;
+  }
+  return self;
 }
 
 - (void) presentNotification:(JCNotificationBanner*)notification {
@@ -39,9 +48,14 @@
   [banner getCurrentPresentingStateAndAtomicallySetPresentingState:YES];
 
   CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
-  CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) / 2) - (350 / 2);
-  CGFloat y = -60 - (MIN(statusBarSize.width, statusBarSize.height));
-  banner.frame = CGRectMake(x, y, 350, 60);
+  // Make the banner fill the width of the screen, minus any requested margins,
+  // up to self.bannerMaxWidth.
+  CGSize bannerSize = CGSizeMake(MIN(self.bannerMaxWidth, view.bounds.size.width - self.minimumHorizontalMargin * 2.0), self.bannerHeight);
+  // Center the banner horizontally.
+  CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) / 2) - (bannerSize.width / 2);
+  // Position the banner offscreen vertically.
+  CGFloat y = -self.bannerHeight - (MIN(statusBarSize.width, statusBarSize.height));
+  banner.frame = CGRectMake(x, y, bannerSize.width, bannerSize.height);
 
   JCNotificationBannerTapHandlingBlock originalTapHandler = banner.notificationBanner.tapHandler;
   JCNotificationBannerTapHandlingBlock wrappingTapHandler = ^{

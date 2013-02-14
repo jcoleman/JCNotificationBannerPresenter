@@ -8,13 +8,13 @@
 @implementation JCNotificationBannerPresenterIOSStyle
 
 - (void) presentNotification:(JCNotificationBanner *)notification
-                   finished:(JCNotificationBannerPresenterFinishedBlock)finished {
-  JCNotificationBannerWindow* overlayWindow = [self newWindowForNotification:notification];
+                    inWindow:(JCNotificationBannerWindow*)window
+                    finished:(JCNotificationBannerPresenterFinishedBlock)finished {
   JCNotificationBannerView* banner = [self newBannerViewForNotification:notification];
 
   JCNotificationBannerViewController* bannerViewController = [JCNotificationBannerViewController new];
-  overlayWindow.rootViewController = bannerViewController;
-  overlayWindow.bannerView = banner;
+  window.rootViewController = bannerViewController;
+  window.bannerView = banner;
 
   UIView* containerView = [self newContainerViewForNotification:notification];
   [containerView addSubview:banner];
@@ -40,8 +40,6 @@
       }
 
       [banner removeFromSuperview];
-      overlayWindow.rootViewController = nil;
-      [overlayWindow removeFromSuperview];
       finished();
     }
   };
@@ -95,8 +93,6 @@
     [self rotateLayer:layer fromAngle:0.0 toAngle:90.0 duration:animationDuration onCompleted:^(){
       if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
         [banner removeFromSuperview];
-        overlayWindow.rootViewController = nil;
-        [overlayWindow removeFromSuperview];
         finished();
       }
     }];

@@ -9,7 +9,26 @@
 
 @implementation JCNotificationBannerPresenter
 
+- (void) willBeginPresentingNotifications {
+  bannerWindow = [self newWindow];
+}
+
+- (void) didFinishPresentingNotifications {
+  bannerWindow.hidden = YES;
+  [bannerWindow removeFromSuperview];
+  bannerWindow.rootViewController = nil;
+  bannerWindow = nil;
+}
+
 - (void) presentNotification:(JCNotificationBanner*)notification
+                    finished:(JCNotificationBannerPresenterFinishedBlock)finished {
+  [self presentNotification:notification
+                   inWindow:bannerWindow
+                   finished:finished];
+}
+
+- (void) presentNotification:(JCNotificationBanner*)notification
+                    inWindow:(JCNotificationBannerWindow*)window
                     finished:(JCNotificationBannerPresenterFinishedBlock)finished {
   // Abstract. Override this and call finished() whenever you are
   // done showing the notification.
@@ -17,7 +36,7 @@
 
 #pragma mark - View helpers
 
-- (JCNotificationBannerWindow*) newWindowForNotification:(JCNotificationBanner*)notification {
+- (JCNotificationBannerWindow*) newWindow {
   JCNotificationBannerWindow* window = [[JCNotificationBannerWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   window.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
   window.userInteractionEnabled = YES;

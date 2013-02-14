@@ -2,11 +2,17 @@
 #import "JCNotificationBannerWindow.h"
 #import "JCNotificationBannerView.h"
 
-@interface JCNotificationBannerPresenter ()
+@interface JCNotificationBannerPresenter () {
+  @private
+  JCNotificationBannerWindow* bannerWindow;
+}
+
+- (void)willBeginPresentingNotifications;
+- (void)didFinishPresentingNotifications;
 
 #pragma mark - View helpers
-- (JCNotificationBannerWindow*) newWindowForNotification:(JCNotificationBanner*)notification;
 - (UIView*) newContainerViewForNotification:(JCNotificationBanner*)notification;
+- (JCNotificationBannerWindow*) newWindow;
 - (JCNotificationBannerView*) newBannerViewForNotification:(JCNotificationBanner*)notification;
 
 @end

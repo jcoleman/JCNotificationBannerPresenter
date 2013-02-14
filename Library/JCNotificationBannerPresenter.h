@@ -1,11 +1,10 @@
 #import <Foundation/Foundation.h>
 #import "JCNotificationBanner.h"
 
+typedef void (^JCNotificationBannerPresenterFinishedBlock)();
+
 @interface JCNotificationBannerPresenter : NSObject
 
-/** Adds notification to queue with given parameters. */
-+ (void) enqueueNotificationWithTitle:(NSString*)title
-                              message:(NSString*)message
-                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler;
+- (void) presentNotification:(JCNotificationBanner*)notification finished:(JCNotificationBannerPresenterFinishedBlock)finished;
 
 @end

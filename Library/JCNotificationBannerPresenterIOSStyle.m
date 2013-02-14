@@ -16,21 +16,8 @@
   return sharedPresenter;
 }
 
-- (void) presentNotification:(JCNotificationBanner*)notification {
-  [self presentNotificationIOSStyle:notification];
-}
-
-- (JCNotificationBannerView*) newBannerViewForNotification:(JCNotificationBanner*)notification {
-  JCNotificationBannerView* view = [[JCNotificationBannerViewIOSStyle alloc]
-                                    initWithNotification:notification];
-  view.userInteractionEnabled = YES;
-  view.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin
-                        | UIViewAutoresizingFlexibleLeftMargin
-                        | UIViewAutoresizingFlexibleRightMargin;
-  return view;
-}
-
-- (void) presentNotificationIOSStyle:(JCNotificationBanner*)notification {
+- (void) presentNotification:(JCNotificationBanner *)notification
+                   finished:(JCNotificationBannerPresenterFinishedBlock)finished {
   JCNotificationBannerWindow* overlayWindow = [self newWindowForNotification:notification];
   JCNotificationBannerView* banner = [self newBannerViewForNotification:notification];
 
@@ -63,8 +50,7 @@
 
       [banner removeFromSuperview];
       [overlayWindow removeFromSuperview];
-
-      [self donePresentingNotification:notification];
+      finished();
     }
   };
   notification.tapHandler = wrappingTapHandler;
@@ -118,8 +104,7 @@
       if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
         [banner removeFromSuperview];
         [overlayWindow removeFromSuperview];
-
-        [self donePresentingNotification:notification];
+        finished();
       }
     }];
   });

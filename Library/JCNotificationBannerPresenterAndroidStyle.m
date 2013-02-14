@@ -23,11 +23,8 @@
   return self;
 }
 
-- (void) presentNotification:(JCNotificationBanner*)notification {
-  [self presentNotificationAndroidStyle:notification];
-}
-
-- (void) presentNotificationAndroidStyle:(JCNotificationBanner*)notification {
+- (void) presentNotification:(JCNotificationBanner *)notification
+                    finished:(JCNotificationBannerPresenterFinishedBlock)finished {
   JCNotificationBannerWindow* overlayWindow = [self newWindowForNotification:notification];
 
   JCNotificationBannerView* banner = [self newBannerViewForNotification:notification];
@@ -66,8 +63,7 @@
 
       [banner removeFromSuperview];
       [overlayWindow removeFromSuperview];
-
-      [self donePresentingNotification:notification];
+      finished();
     }
   };
   banner.notificationBanner.tapHandler = wrappingTapHandler;
@@ -93,12 +89,12 @@
                      animations:^{
                        banner.frame = CGRectOffset(banner.frame, 0, -banner.frame.size.height);
                        banner.alpha = 0;
-                     } completion:^(BOOL finished) {
+                     } completion:^(BOOL didFinish) {
                        if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
                          [banner removeFromSuperview];
                          [overlayWindow removeFromSuperview];
 
-                         [self donePresentingNotification:notification];
+                         finished();
                        }
                      }];
   });

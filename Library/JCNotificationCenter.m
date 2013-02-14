@@ -1,0 +1,96 @@
+#import "JCNotificationCenter.h"
+#import "JCNotificationBannerPresenter.h"
+#import "JCNotificationBannerPresenterIOSStyle.h"
+
+@interface JCNotificationCenter () {
+@private
+  NSMutableArray* enqueuedNotifications;
+  NSLock* isPresentingMutex;
+  NSObject* notificationQueueMutex;
+}
+@end
+
+@implementation JCNotificationCenter
+
+- (JCNotificationCenter*) init {
+  self = [super init];
+  if (self) {
+    enqueuedNotifications = [NSMutableArray new];
+    isPresentingMutex = [NSLock new];
+    notificationQueueMutex = [NSObject new];
+    self.presenter = [JCNotificationBannerPresenterIOSStyle new];
+  }
+  return self;
+}
+
++ (JCNotificationCenter*) sharedCenter {
+  static JCNotificationCenter* sharedCenter = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    sharedCenter = [JCNotificationCenter new];
+  });
+  return sharedCenter;
+}
+
+/** Adds notification with iOS banner Style to queue with given parameters. */
++ (void) enqueueNotificationWithTitle:(NSString*)title
+                              message:(NSString*)message
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
+  [[self sharedCenter] enqueueNotificationWithTitle:title
+                                            message:message
+                                         tapHandler:tapHandler];
+}
+
+- (void) enqueueNotificationWithTitle:(NSString*)title
+                              message:(NSString*)message
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
+  JCNotificationBanner* notification = [[JCNotificationBanner alloc]
+                                        initWithTitle:title
+                                        message:message
+                                        tapHandler:tapHandler];
+  @synchronized(notificationQueueMutex) {
+    [enqueuedNotifications addObject:notification];
+  }
+  [self beginPresentingNotifications];
+}
+
+- (JCNotificationBanner*) dequeueNotification {
+  JCNotificationBanner* notification;
+  @synchronized(notificationQueueMutex) {
+    if ([enqueuedNotifications count] > 0) {
+      notification = [enqueuedNotifications objectAtIndex:0];
+      [enqueuedNotifications removeObjectAtIndex:0];
+    }
+  }
+  return notification;
+}
+
+- (void) beginPresentingNotifications {
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if ([isPresentingMutex tryLock]) {
+      JCNotificationBanner* nextNotification = [self dequeueNotification];
+      if (nextNotification) {
+        [self presentNotification:nextNotification];
+      } else {
+        [isPresentingMutex unlock];
+      }
+    } else {
+      // Notification presentation already in progress; do nothing.
+    }
+  });
+}
+
+- (void) presentNotification:(JCNotificationBanner*)notification {
+  [self.presenter presentNotification:notification finished:^{
+    [self donePresentingNotification:notification];
+  }];
+}
+
+- (void) donePresentingNotification:(JCNotificationBanner*)notification {
+  // Process any notifications enqueued during this one's presentation.
+  [isPresentingMutex unlock];
+  [self beginPresentingNotifications];
+}
+
+
+@end

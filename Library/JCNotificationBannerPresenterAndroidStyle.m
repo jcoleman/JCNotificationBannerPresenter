@@ -4,6 +4,20 @@
 #import "JCNotificationBannerViewController.h"
 
 @implementation JCNotificationBannerPresenterAndroidStyle
+
++ (JCNotificationBannerPresenter*) sharedPresenter {
+  static JCNotificationBannerPresenter* sharedPresenter = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    sharedPresenter = [JCNotificationBannerPresenterAndroidStyle new];
+  });
+  return sharedPresenter;
+}
+
+- (void) presentNotification:(JCNotificationBanner*)notification {
+  [self presentNotificationAndroidStyle:notification];
+}
+
 - (void) presentNotificationAndroidStyle:(JCNotificationBanner*)notification {
   overlayWindow = [[JCNotificationBannerWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;

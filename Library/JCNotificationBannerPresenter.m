@@ -7,15 +7,6 @@
 #import "JCNotificationBannerViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
-typedef struct CGVector {
-  CGFloat x,y,z;
-} CGVector;
-
-CGVector CGVectorMake(CGFloat x, CGFloat y, CGFloat z) {
-  CGVector vec = {x,y,z};
-  return vec;
-}
-
 @implementation JCNotificationBannerPresenter
 
 - (void) presentNotification:(JCNotificationBanner*)notification

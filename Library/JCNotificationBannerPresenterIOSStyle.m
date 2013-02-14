@@ -11,7 +11,7 @@
   static JCNotificationBannerPresenter* sharedPresenter = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    sharedPresenter = [JCNotificationBannerPresenterIOSStyle new];
+    sharedPresenter = [self.class new];
   });
   return sharedPresenter;
 }

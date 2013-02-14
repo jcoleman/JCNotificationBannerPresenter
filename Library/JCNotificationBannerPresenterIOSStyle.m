@@ -7,15 +7,6 @@
 
 @implementation JCNotificationBannerPresenterIOSStyle
 
-+ (JCNotificationBannerPresenter*) sharedPresenter {
-  static JCNotificationBannerPresenter* sharedPresenter = nil;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    sharedPresenter = [self.class new];
-  });
-  return sharedPresenter;
-}
-
 - (void) presentNotification:(JCNotificationBanner *)notification
                    finished:(JCNotificationBannerPresenterFinishedBlock)finished {
   JCNotificationBannerWindow* overlayWindow = [self newWindowForNotification:notification];

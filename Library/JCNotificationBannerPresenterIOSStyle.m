@@ -105,7 +105,7 @@
 
 #pragma mark - View helpers
 
-- (UIView*) newContainerViewForNotification:(JCNotificationBanner *)notification {
+- (UIView*) newContainerViewForNotification:(JCNotificationBanner*)notification {
   UIView* view = [super newContainerViewForNotification:notification];
   view.autoresizesSubviews = YES;
   return view;

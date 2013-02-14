@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		53B55DE016CD594E0011222B /* JCNotificationBannerPresenterSmokeStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B55DDF16CD594E0011222B /* JCNotificationBannerPresenterSmokeStyle.m */; };
+		53B55DE416CD596D0011222B /* JCNotificationBannerPresenterIOSStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B55DE316CD596D0011222B /* JCNotificationBannerPresenterIOSStyle.m */; };
+		53B55DE716CD5A880011222B /* JCNotificationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 53B55DE616CD5A880011222B /* JCNotificationCenter.m */; };
 		6D0CCF3716AF604200A28EB5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D0CCF3616AF604200A28EB5 /* QuartzCore.framework */; };
 		C41E33061640322C0049334F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C41E33051640322C0049334F /* UIKit.framework */; };
 		C41E33081640322C0049334F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C41E33071640322C0049334F /* Foundation.framework */; };
@@ -28,6 +31,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		53B55DDD16CD594E0011222B /* JCNotificationBannerPresenter_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCNotificationBannerPresenter_Private.h; sourceTree = "<group>"; };
+		53B55DDE16CD594E0011222B /* JCNotificationBannerPresenterSmokeStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCNotificationBannerPresenterSmokeStyle.h; sourceTree = "<group>"; };
+		53B55DDF16CD594E0011222B /* JCNotificationBannerPresenterSmokeStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCNotificationBannerPresenterSmokeStyle.m; sourceTree = "<group>"; };
+		53B55DE216CD596D0011222B /* JCNotificationBannerPresenterIOSStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCNotificationBannerPresenterIOSStyle.h; sourceTree = "<group>"; };
+		53B55DE316CD596D0011222B /* JCNotificationBannerPresenterIOSStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCNotificationBannerPresenterIOSStyle.m; sourceTree = "<group>"; };
+		53B55DE516CD5A880011222B /* JCNotificationCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JCNotificationCenter.h; sourceTree = "<group>"; };
+		53B55DE616CD5A880011222B /* JCNotificationCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JCNotificationCenter.m; sourceTree = "<group>"; };
 		6D0CCF3616AF604200A28EB5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C41E33011640322C0049334F /* JCNotificationBannerPresenterDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JCNotificationBannerPresenterDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C41E33051640322C0049334F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -133,6 +143,11 @@
 		C41E3333164036F20049334F /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				53B55DE216CD596D0011222B /* JCNotificationBannerPresenterIOSStyle.h */,
+				53B55DE316CD596D0011222B /* JCNotificationBannerPresenterIOSStyle.m */,
+				53B55DDD16CD594E0011222B /* JCNotificationBannerPresenter_Private.h */,
+				53B55DDE16CD594E0011222B /* JCNotificationBannerPresenterSmokeStyle.h */,
+				53B55DDF16CD594E0011222B /* JCNotificationBannerPresenterSmokeStyle.m */,
 				C41E3334164036F20049334F /* JCNotificationBanner.h */,
 				C41E3335164036F20049334F /* JCNotificationBanner.m */,
 				C41E3336164036F20049334F /* JCNotificationBannerPresenter.h */,
@@ -145,6 +160,8 @@
 				C41E333B164036F20049334F /* JCNotificationBannerViewController.m */,
 				C41E333C164036F20049334F /* JCNotificationBannerWindow.h */,
 				C41E333D164036F20049334F /* JCNotificationBannerWindow.m */,
+				53B55DE516CD5A880011222B /* JCNotificationCenter.h */,
+				53B55DE616CD5A880011222B /* JCNotificationCenter.m */,
 			);
 			name = Library;
 			path = ../../Library;
@@ -226,6 +243,9 @@
 				C41E3341164036F20049334F /* JCNotificationBannerViewController.m in Sources */,
 				C41E3342164036F20049334F /* JCNotificationBannerWindow.m in Sources */,
 				C49AA7F516CC40FF0079EDAE /* JCNotificationBannerViewIOSStyle.m in Sources */,
+				53B55DE016CD594E0011222B /* JCNotificationBannerPresenterSmokeStyle.m in Sources */,
+				53B55DE416CD596D0011222B /* JCNotificationBannerPresenterIOSStyle.m in Sources */,
+				53B55DE716CD5A880011222B /* JCNotificationCenter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

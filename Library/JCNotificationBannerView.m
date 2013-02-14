@@ -102,6 +102,12 @@ const CGFloat kJCNotificationBannerViewMarginY = 5.0;
   }
   self.messageLabel.frame = CGRectMake(currentX, currentY, contentWidth, (self.frame.size.height - borderY) - currentY);
   [self.messageLabel sizeToFit];
+  CGRect messageFrame = self.messageLabel.frame;
+  CGFloat spillY = (currentY + messageFrame.size.height + kJCNotificationBannerViewMarginY) - self.frame.size.height;
+  if (spillY > 0.0) {
+    messageFrame.size.height -= spillY;
+    self.messageLabel.frame = messageFrame;
+  }
 }
 
 - (void) setNotificationBanner:(JCNotificationBanner*)notification {

@@ -49,6 +49,7 @@
       }
 
       [banner removeFromSuperview];
+      overlayWindow.rootViewController = nil;
       [overlayWindow removeFromSuperview];
       finished();
     }
@@ -103,6 +104,7 @@
     [self rotateLayer:layer fromAngle:0.0 toAngle:90.0 duration:animationDuration onCompleted:^(){
       if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
         [banner removeFromSuperview];
+        overlayWindow.rootViewController = nil;
         [overlayWindow removeFromSuperview];
         finished();
       }

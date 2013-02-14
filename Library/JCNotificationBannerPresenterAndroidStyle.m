@@ -62,6 +62,7 @@
       }
 
       [banner removeFromSuperview];
+      overlayWindow.rootViewController = nil;
       [overlayWindow removeFromSuperview];
       finished();
     }
@@ -92,6 +93,7 @@
                      } completion:^(BOOL didFinish) {
                        if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
                          [banner removeFromSuperview];
+                         overlayWindow.rootViewController = nil;
                          [overlayWindow removeFromSuperview];
 
                          finished();

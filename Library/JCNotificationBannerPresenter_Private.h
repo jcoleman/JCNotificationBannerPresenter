@@ -7,8 +7,9 @@
   JCNotificationBannerWindow* bannerWindow;
 }
 
-- (void)willBeginPresentingNotifications;
-- (void)didFinishPresentingNotifications;
+- (void) presentNotification:(JCNotificationBanner*)notification
+                    inWindow:(JCNotificationBannerWindow*)window
+                    finished:(JCNotificationBannerPresenterFinishedBlock)finished;
 
 #pragma mark - View helpers
 - (UIView*) newContainerViewForNotification:(JCNotificationBanner*)notification;

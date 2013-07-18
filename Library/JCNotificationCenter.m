@@ -44,18 +44,14 @@
 + (void) enqueueNotificationWithTitle:(NSString*)title
                               message:(NSString*)message
                            tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
-  [[self sharedCenter] enqueueNotificationWithTitle:title
-                                            message:message
-                                         tapHandler:tapHandler];
+  JCNotificationBanner *notification = [[JCNotificationBanner alloc] initWithTitle:title
+                                                                           message:message
+                                                                        tapHandler:tapHandler];
+  
+  [[self sharedCenter] enqueueNotification:notification];
 }
 
-- (void) enqueueNotificationWithTitle:(NSString*)title
-                              message:(NSString*)message
-                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
-  JCNotificationBanner* notification = [[JCNotificationBanner alloc]
-                                        initWithTitle:title
-                                        message:message
-                                        tapHandler:tapHandler];
+- (void)enqueueNotification:(JCNotificationBanner*)notification {
   @synchronized(notificationQueueMutex) {
     [enqueuedNotifications addObject:notification];
   }

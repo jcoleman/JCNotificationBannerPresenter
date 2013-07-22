@@ -14,6 +14,10 @@
                               message:(NSString*)message
                            tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler;
 
+- (void) enqueueNotificationWithTitle:(NSString*)title
+                              message:(NSString*)message
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler;
+
 - (void) enqueueNotification:(JCNotificationBanner*)notification;
 
 @end

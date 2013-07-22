@@ -13,8 +13,8 @@ typedef void (^JCNotificationBannerTapHandlingBlock)();
                                 message:(NSString*)message
                              tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler;
 
-- (JCNotificationBanner*) initWithTitle:(NSString *)title
-                                message:(NSString *)message
+- (JCNotificationBanner*) initWithTitle:(NSString*)title
+                                message:(NSString*)message
                                 timeout:(NSTimeInterval)timeout
                              tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler;
 @end

@@ -15,8 +15,8 @@
 }
 
 
-- (JCNotificationBanner*) initWithTitle:(NSString *)_title
-                                message:(NSString *)_message
+- (JCNotificationBanner*) initWithTitle:(NSString*)_title
+                                message:(NSString*)_message
                                 timeout:(NSTimeInterval)_timeout
                              tapHandler:(JCNotificationBannerTapHandlingBlock)_tapHandler {
   

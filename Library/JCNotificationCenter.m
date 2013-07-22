@@ -36,22 +36,32 @@
   return sharedCenter;
 }
 
-+ (Class)presenterClass {
-    return [JCNotificationBannerPresenterIOSStyle class];
++ (Class) presenterClass {
+  return [JCNotificationBannerPresenterIOSStyle class];
 }
 
 /** Adds notification with iOS banner Style to queue with given parameters. */
 + (void) enqueueNotificationWithTitle:(NSString*)title
                               message:(NSString*)message
                            tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
-  JCNotificationBanner *notification = [[JCNotificationBanner alloc] initWithTitle:title
+  JCNotificationBanner* notification = [[JCNotificationBanner alloc] initWithTitle:title
                                                                            message:message
                                                                         tapHandler:tapHandler];
   
   [[self sharedCenter] enqueueNotification:notification];
 }
 
-- (void)enqueueNotification:(JCNotificationBanner*)notification {
+- (void) enqueueNotificationWithTitle:(NSString*)title
+                              message:(NSString*)message
+                           tapHandler:(JCNotificationBannerTapHandlingBlock)tapHandler {
+  JCNotificationBanner* notification = [[JCNotificationBanner alloc]
+                                        initWithTitle:title
+                                        message:message
+                                        tapHandler:tapHandler];
+  [self enqueueNotification:notification];
+}
+
+- (void) enqueueNotification:(JCNotificationBanner*)notification {
   @synchronized(notificationQueueMutex) {
     [enqueuedNotifications addObject:notification];
   }

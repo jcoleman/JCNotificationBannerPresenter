@@ -76,7 +76,7 @@
   [containerView.layer addSublayer:imageLayer];
 
   // On timeout, slide it up while fading it out.
-  if (notification.timeout > 0) {
+  if (notification.timeout > 0.0) {
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, notification.timeout * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
       // Add image of background to layer.

@@ -22,7 +22,7 @@
     enqueuedNotifications = [NSMutableArray new];
     isPresentingMutex = [NSLock new];
     notificationQueueMutex = [NSObject new];
-    self.presenter = [JCNotificationBannerPresenterIOSStyle new];
+    self.presenter = [[[self class] presenterClass] new];
   }
   return self;
 }
@@ -31,9 +31,13 @@
   static JCNotificationCenter* sharedCenter = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    sharedCenter = [JCNotificationCenter new];
+    sharedCenter = [[self class] new];
   });
   return sharedCenter;
+}
+
++ (Class)presenterClass {
+    return [JCNotificationBannerPresenterIOSStyle class];
 }
 
 /** Adds notification with iOS banner Style to queue with given parameters. */

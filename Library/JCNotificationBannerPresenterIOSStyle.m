@@ -76,31 +76,32 @@
   [containerView.layer addSublayer:imageLayer];
 
   // On timeout, slide it up while fading it out.
-  double delayInSeconds = 5.0;
-  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-    // Add image of background to layer.
-    CALayer* imageLayer = [CALayer layer];
-    imageLayer.frame =  banner.frame;
-    imageLayer.anchorPointZ = 0.5f * banner.frame.size.height;
-    imageLayer.contents = (id)image.CGImage;
-    imageLayer.shadowOffset = CGSizeMake(0, 1);
-    imageLayer.shadowColor = [UIColor darkGrayColor].CGColor;
-    imageLayer.shadowRadius = 3.0;
-    imageLayer.shadowOpacity = 0.8;
-    [self rotateLayer:imageLayer fromAngle:-90.0 toAngle:0.0 duration:animationDuration onCompleted:^(){} ];
-    [[containerView layer] addSublayer:imageLayer];
-
-    CALayer* layer = [banner layer];
-    [self rotateLayer:layer fromAngle:0.0 toAngle:90.0 duration:animationDuration onCompleted:^(){
-      if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
-        [banner removeFromSuperview];
-        finished();
-      }
-      // Break the retain cycle
-      notification.tapHandler = nil;
-    }];
-  });
+  if (notification.timeout > 0.0) {
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, notification.timeout * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+      // Add image of background to layer.
+      CALayer* imageLayer = [CALayer layer];
+      imageLayer.frame =  banner.frame;
+      imageLayer.anchorPointZ = 0.5f * banner.frame.size.height;
+      imageLayer.contents = (id)image.CGImage;
+      imageLayer.shadowOffset = CGSizeMake(0, 1);
+      imageLayer.shadowColor = [UIColor darkGrayColor].CGColor;
+      imageLayer.shadowRadius = 3.0;
+      imageLayer.shadowOpacity = 0.8;
+      [self rotateLayer:imageLayer fromAngle:-90.0 toAngle:0.0 duration:animationDuration onCompleted:^(){} ];
+      [[containerView layer] addSublayer:imageLayer];
+      
+      CALayer* layer = [banner layer];
+      [self rotateLayer:layer fromAngle:0.0 toAngle:90.0 duration:animationDuration onCompleted:^(){
+        if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
+          [banner removeFromSuperview];
+          finished();
+        }
+        // Break the retain cycle
+        notification.tapHandler = nil;
+      }];
+    });
+  }
 }
 
 #pragma mark - View helpers

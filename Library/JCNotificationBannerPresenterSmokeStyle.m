@@ -73,22 +73,23 @@
 
 
   // On timeout, slide it up while fading it out.
-  double delayInSeconds = 5.0;
-  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                       banner.frame = CGRectOffset(banner.frame, 0, -banner.frame.size.height);
-                       banner.alpha = 0;
-                     } completion:^(BOOL didFinish) {
-                       if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
-                         [banner removeFromSuperview];
-                         finished();
-                         // Break the retain cycle
-                         notification.tapHandler = nil;
-                       }
-                     }];
-  });
+  if (notification.timeout > 0.0) {
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, notification.timeout * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+      [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseIn
+                       animations:^{
+                         banner.frame = CGRectOffset(banner.frame, 0, -banner.frame.size.height);
+                         banner.alpha = 0;
+                       } completion:^(BOOL didFinish) {
+                         if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
+                           [banner removeFromSuperview];
+                           finished();
+                           // Break the retain cycle
+                           notification.tapHandler = nil;
+                         }
+                       }];
+    });
+  }
 }
 
 #pragma mark - View helpers

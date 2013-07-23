@@ -27,6 +27,10 @@ Usage?
        }];
     }
 
+By default the banner style is iOS style, which presents banners with a 3D rotation. The project comes with an alternative Smoke appearance, which slides a semi-translucent window down from the status bar. If you want to use the same style for all notifications in your project, you can set the style at compile time by overriding or editing the `+presenterClass` method in JCNotificationCenter.
+
+Notifications enqueued with the method `+enqueueNotificationWithTitle:message:tapHandler:` will time out in five seconds. You can change this on a per-notification basis by setting the timeout property in JCNotificationBanner and enqueing the banner with `-enqueueNotification:`. A value <= 0 will never timeout and requires user interaction to dismiss.
+
 Installation?
 -------------
 

@@ -82,6 +82,7 @@
                        } completion:^(BOOL didFinish) {
                          if ([banner getCurrentPresentingStateAndAtomicallySetPresentingState:NO]) {
                            [banner removeFromSuperview];
+                           [containerView removeFromSuperview];
                            finished();
                            // Break the retain cycle
                            notification.tapHandler = nil;

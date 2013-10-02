@@ -21,23 +21,22 @@
 
   JCNotificationBannerViewController* bannerViewController = [JCNotificationBannerViewController new];
   window.rootViewController = bannerViewController;
+  UIView* originalControllerView = bannerViewController.view;
 
   UIView* containerView = [self newContainerViewForNotification:notification];
-
-  window.bannerView = banner;
-
   [containerView addSubview:banner];
   bannerViewController.view = containerView;
 
-  UIView* view = ((UIView*)[[[[UIApplication sharedApplication] keyWindow] subviews] objectAtIndex:0]);
-  containerView.bounds = view.bounds;
-  containerView.transform = view.transform;
+  window.bannerView = banner;
+
+  containerView.bounds = originalControllerView.bounds;
+  containerView.transform = originalControllerView.transform;
   [banner getCurrentPresentingStateAndAtomicallySetPresentingState:YES];
 
   CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
   // Make the banner fill the width of the screen, minus any requested margins,
   // up to self.bannerMaxWidth.
-  CGSize bannerSize = CGSizeMake(MIN(self.bannerMaxWidth, view.bounds.size.width - self.minimumHorizontalMargin * 2.0), self.bannerHeight);
+  CGSize bannerSize = CGSizeMake(MIN(self.bannerMaxWidth, originalControllerView.bounds.size.width - self.minimumHorizontalMargin * 2.0), self.bannerHeight);
   // Center the banner horizontally.
   CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) / 2) - (bannerSize.width / 2);
   // Position the banner offscreen vertically.

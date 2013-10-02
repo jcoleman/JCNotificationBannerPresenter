@@ -40,7 +40,23 @@
   // Center the banner horizontally.
   CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) / 2) - (bannerSize.width / 2);
   // Position the banner offscreen vertically.
-  CGFloat y = -self.bannerHeight - (MIN(statusBarSize.width, statusBarSize.height));
+  CGFloat y = -self.bannerHeight;
+
+#ifdef __IPHONE_7_0
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
+  BOOL accountForStatusBarHeight = ([[UIDevice currentDevice].systemVersion intValue] < 7);
+#else
+  // We're building for a pre-iOS7 base SDK.
+  BOOL accountForStatusBarHeight = YES;
+#endif
+#else
+  // We don't even have access to the iOS 7 availability constants.
+  BOOL accountForStatusBarHeight = YES;
+#endif
+  if (accountForStatusBarHeight) {
+    y -= (MIN(statusBarSize.width, statusBarSize.height));
+  }
+
   banner.frame = CGRectMake(x, y, bannerSize.width, bannerSize.height);
 
   JCNotificationBannerTapHandlingBlock originalTapHandler = banner.notificationBanner.tapHandler;

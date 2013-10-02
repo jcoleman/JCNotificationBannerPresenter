@@ -47,6 +47,7 @@
   [self presentNotification:notification
                    inWindow:bannerWindow
                    finished:finished];
+
 }
 
 #pragma mark - View helpers

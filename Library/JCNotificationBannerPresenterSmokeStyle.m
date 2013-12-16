@@ -38,7 +38,7 @@
   // up to self.bannerMaxWidth.
   CGSize bannerSize = CGSizeMake(MIN(self.bannerMaxWidth, originalControllerView.bounds.size.width - self.minimumHorizontalMargin * 2.0), self.bannerHeight);
   // Center the banner horizontally.
-  CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) / 2) - (bannerSize.width / 2);
+  CGFloat x = [[UIApplication sharedApplication]isStatusBarHidden] ? [[UIScreen mainScreen]bounds].size.width/2 - bannerSize.width/2 : (MAX(statusBarSize.width, statusBarSize.height) / 2) - (bannerSize.width / 2);
   // Position the banner offscreen vertically.
   CGFloat y = -self.bannerHeight;
 

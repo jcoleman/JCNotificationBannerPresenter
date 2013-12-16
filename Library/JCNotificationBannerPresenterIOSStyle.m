@@ -29,7 +29,7 @@
   CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
   CGFloat width = 320.0;
   CGFloat height = 60.0;
-  CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) - width) / 2.0;
+  CGFloat x = [[UIApplication sharedApplication]isStatusBarHidden] ? [[UIScreen mainScreen]bounds].size.width/2 - width/2 : (MAX(statusBarSize.width, statusBarSize.height) - width) / 2.0;
   CGFloat y = -60.0;
   banner.frame = CGRectMake(x, y, width, height);
 

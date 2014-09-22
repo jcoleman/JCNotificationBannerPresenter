@@ -161,6 +161,7 @@
       break;
 
     case UIInterfaceOrientationPortrait:
+    case UIInterfaceOrientationUnknown:
       break;
 
     case UIInterfaceOrientationPortraitUpsideDown:

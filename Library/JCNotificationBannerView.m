@@ -85,6 +85,8 @@ const CGFloat kJCNotificationBannerViewMarginY = 5.0;
 }
 
 - (void) layoutSubviews {
+  [super layoutSubviews];
+
   if (!(self.frame.size.width > 0)) { return; }
     
   BOOL hasTitle = notificationBanner ? (notificationBanner.title.length > 0) : NO;

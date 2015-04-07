@@ -11,7 +11,7 @@ JCNotificationBannerPresenter allows you to display notification banners asynchr
 Usage?
 ----
 
-    #import "JCNotificationBannerPresenter.h"
+    #import "JCNotificationCenter.h"
     
     …
     

@@ -27,6 +27,10 @@
   [banner getCurrentPresentingStateAndAtomicallySetPresentingState:YES];
 
   CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
+  // if the status bar is hidden it has size 0, so pretend it's the width of the display window
+  if(CGSizeEqualToSize(statusBarSize, CGSizeZero)) {
+    statusBarSize = CGSizeMake(window.bounds.size.width, statusBarSize.height);
+  }  
   CGFloat width = 320.0;
   CGFloat height = 60.0;
   CGFloat x = (MAX(statusBarSize.width, statusBarSize.height) - width) / 2.0;

@@ -33,6 +33,10 @@
   [banner getCurrentPresentingStateAndAtomicallySetPresentingState:YES];
 
   CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
+  // if the status bar is hidden it has size 0, so pretend it's the width of the display window
+  if(CGSizeEqualToSize(statusBarSize, CGSizeZero)) {
+    statusBarSize = CGSizeMake(window.bounds.size.width, statusBarSize.height);
+  }
   // Make the banner fill the width of the screen, minus any requested margins,
   // up to self.bannerMaxWidth.
   CGSize bannerSize = CGSizeMake(MIN(self.bannerMaxWidth, originalControllerView.bounds.size.width), self.bannerHeight);

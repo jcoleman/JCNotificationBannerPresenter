@@ -55,6 +55,11 @@
   if (accountForStatusBarHeight) {
     y -= (MIN(statusBarSize.width, statusBarSize.height));
   }
+    
+  CGFloat statusBarHeight = (MIN(statusBarSize.width, statusBarSize.height));
+  if (statusBarHeight > kJCNotificationStandardStatusBarHeight + 1) {
+    y -= (statusBarHeight - kJCNotificationStandardStatusBarHeight);
+  }
 
   banner.frame = CGRectMake(x, y, bannerSize.width, bannerSize.height);
 

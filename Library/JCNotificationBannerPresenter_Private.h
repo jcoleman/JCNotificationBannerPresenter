@@ -2,6 +2,8 @@
 #import "JCNotificationBannerWindow.h"
 #import "JCNotificationBannerView.h"
 
+static const CGFloat kJCNotificationStandardStatusBarHeight = 20.0;
+
 @interface JCNotificationBannerPresenter () {
   @private
   JCNotificationBannerWindow* bannerWindow;
